@@ -46,3 +46,261 @@
             color: #0f172a;
             border: none;
             padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #calendar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .day-card {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            border-radius: 10px;
+            color: #1e293b;
+            font-weight: 500;
+            scroll-margin-top: 140px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .day-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .work-day { background-color: #cbd5e1; } 
+        .weekend { background-color: #475569; color: #cbd5e1; } 
+        .vacation { background-color: #d1fae5; } 
+        .holiday { background-color: #fee2e2; } 
+
+        .date-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .status-label {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0.8;
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .cycle-badge {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            min-width: 55px;
+            text-align: center;
+        }
+
+        .day-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.25);
+            text-align: left;
+        }
+
+        .day-details-content {
+            padding: 15px;
+            border-top: 1px dashed rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: inherit;
+        }
+
+        .task-list {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+        }
+
+        .task-list strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #0f172a;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 3px;
+        }
+
+        .day-card.active .day-details {
+            max-height: 350px;
+        }
+
+        .highlight {
+            background-color: #fecaca !important;
+            border: 2px solid #ef4444 !important;
+            color: #7f1d1d !important;
+            transform: scale(1.02);
+            z-index: 10;
+        }
+        
+        .highlight .day-details-content { color: #7f1d1d !important; }
+    </style>
+</head>
+<body>
+
+    <div class="header-sticky">
+        <h1>Planning 6èmes</h1>
+        <div class="controls">
+            <input type="date" id="datePicker">
+            <button class="btn-today" onclick="scrollToToday()">Aujourd'hui</button>
+        </div>
+    </div>
+
+    <div id="calendar"></div>
+
+    <script>
+        const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
+        
+        const joursFeries = [
+            "2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", 
+            "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15",
+            "2026-11-01", "2026-11-11", "2026-12-25"
+        ];
+
+        function checkVacancesB(dateStr) {
+            if (dateStr >= "2026-02-14" && dateStr <= "2026-03-01") return true;
+            if (dateStr >= "2026-04-11" && dateStr <= "2026-04-26") return true;
+            if (dateStr >= "2026-07-04" && dateStr <= "2026-08-31") return true;
+            if (dateStr >= "2026-10-17" && dateStr <= "2026-11-01") return true;
+            if (dateStr >= "2026-12-19" && dateStr <= "2026-12-31") return true;
+            return false;
+        }
+
+        const startDate = new Date(2026, 0, 1);
+        const endDate = new Date(2026, 11, 31);
+        const calendar = document.getElementById("calendar");
+        
+        let currentDate = new Date(startDate);
+
+        while (currentDate <= endDate) {
+            const div = document.createElement("div");
+            const y = currentDate.getFullYear();
+            const m = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const d = String(currentDate.getDate()).padStart(2, '0');
+            const dateIso = `${y}-${m}-${d}`;
+            
+            div.id = "date-" + dateIso;
+            
+            const dayOfWeek = currentDate.getDay(); 
+            const diffDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+            const cycleText = cycle[diffDays % cycle.length];
+
+            let statusMarkup = "";
+            let cardClass = "work-day";
+            let extraContent = "";
+
+            // Contenu spécifique pour les lundis
+            if (dayOfWeek === 1) { 
+                extraContent = `
+                    <div class="task-list">
+                        <strong>MATIN</strong>
+                        <div class="task-item">🔹 Inspection des EPI</div>
+                        <div class="task-item">🔹 Vérification des ARI et air respirable</div>
+                        <strong style="margin-top:10px">APRÈS MIDI</strong>
+                        <div class="task-item">🏟️ Sport collectif (stade de la Jouvène)</div>
+                    </div>
+                `;
+            }
+
+            // Gestion des labels
+            if (joursFeries.includes(dateIso)) {
+                cardClass = "holiday";
+                statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`;
+            } else if (checkVacancesB(dateIso)) {
+                cardClass = "vacation";
+                statusMarkup = `<span class="status-label">🏖️ VACANCES</span>`;
+            } else if (dayOfWeek === 0 || dayOfWeek === 6) {
+                cardClass = "weekend";
+            }
+
+            div.className = `day-card ${cardClass}`;
+            
+            // On ne crée la zone de détails que si du contenu existe
+            const detailsHtml = extraContent ? `
+                <div class="day-details">
+                    <div class="day-details-content">
+                        ${extraContent}
+                    </div>
+                </div>` : "";
+
+            div.innerHTML = `
+                <div class="day-card-header" onclick="toggleCard(this, '${dateIso}')">
+                    <div class="date-content">
+                        <span>${formatDate(currentDate)}</span>
+                        ${statusMarkup}
+                    </div>
+                    <div class="cycle-badge">${cycleText}</div>
+                </div>
+                ${detailsHtml}
+            `;
+
+            calendar.appendChild(div);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        function formatDate(date) {
+            let options = { weekday: 'long', day: 'numeric', month: 'long' };
+            let s = date.toLocaleDateString('fr-FR', options);
+            if (date.getDate() === 1) s = s.replace(" 1 ", " 1er ");
+            return s;
+        }
+
+        function toggleCard(headerElement, dateIso) {
+            const card = headerElement.parentElement;
+            applyHighlight(dateIso);
+            card.classList.toggle('active');
+        }
+
+        function applyHighlight(dateIso) {
+            const currentHighlight = document.querySelector('.highlight');
+            if (currentHighlight) {
+                currentHighlight.classList.remove('highlight');
+            }
+            const element = document.getElementById("date-" + dateIso);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('highlight');
+            }
+        }
+
+        function scrollToToday() {
+            const now = new Date();
+            const dateIso = `2026-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            applyHighlight(dateIso);
+        }
+
+        document.getElementById('datePicker').addEventListener('change', function() {
+            applyHighlight(this.value);
+        });
+    </script>
+</body>
+</html>
