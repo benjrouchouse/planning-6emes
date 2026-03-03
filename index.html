@@ -127,11 +127,12 @@
         ];
 
         function checkVacancesB(dateStr) {
-            if (dateStr >= "2026-02-14" && dateStr <= "2026-03-01") return true;
-            if (dateStr >= "2026-04-11" && dateStr <= "2026-04-26") return true;
-            if (dateStr >= "2026-07-04" && dateStr <= "2026-08-31") return true;
-            if (dateStr >= "2026-10-17" && dateStr <= "2026-11-01") return true;
-            if (dateStr >= "2026-12-19" && dateStr <= "2026-12-31") return true;
+            // Ajustement : Samedi au Dimanche soir inclus
+            if (dateStr >= "2026-02-14" && dateStr <= "2026-03-01") return true; // Hiver
+            if (dateStr >= "2026-04-11" && dateStr <= "2026-04-26") return true; // Printemps
+            if (dateStr >= "2026-07-04" && dateStr <= "2026-08-31") return true; // Été
+            if (dateStr >= "2026-10-17" && dateStr <= "2026-11-01") return true; // Toussaint
+            if (dateStr >= "2026-12-19" && dateStr <= "2027-01-03") return true; // Noël
             return false;
         }
 
@@ -143,7 +144,7 @@
         while (currentDate <= endDate) {
             const div = document.createElement("div");
             const dateIso = currentDate.toISOString().split('T')[0];
-            const dayOfWeek = currentDate.getDay();
+            const dayOfWeek = currentDate.getDay(); // 0=Dim, 6=Sam
             div.id = "date-" + dateIso;
             
             const diffDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
@@ -152,6 +153,7 @@
             let statusMarkup = "";
             let cardClass = "work-day";
 
+            // PRIORITÉ : FÉRIÉ > VACANCES > WEEKEND
             if (joursFeries.includes(dateIso)) {
                 cardClass = "holiday";
                 statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`;
@@ -160,7 +162,6 @@
                 statusMarkup = `<span class="status-label">🏖️ VACANCES</span>`;
             } else if (dayOfWeek === 0 || dayOfWeek === 6) {
                 cardClass = "weekend";
-                statusMarkup = ""; // Plus de mention "Repos" ici
             }
 
             div.className = `day-card ${cardClass}`;
