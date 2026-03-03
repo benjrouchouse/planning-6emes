@@ -1,164 +1,93 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planning 6èmes</title>
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
-    margin: 0;
-    padding: 0;
-}
-
-header {
-    padding: 15px;
-    background: #1e293b;
-    text-align: center;
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px;
-    flex-wrap: wrap;
-}
-
-button, select, input {
-    padding: 8px;
-    border-radius: 6px;
-    border: none;
-    font-size: 14px;
-}
-
-button {
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-}
-
-#calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    padding: 10px;
-}
-
-.day {
-    background: #1e293b;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 12px;
-}
-
-.day strong {
-    display: block;
-    margin-top: 4px;
-}
-
-/* Couleurs par sixième */
-.c42 { background: #1e3a8a; }
-.c53 { background: #166534; }
-.c64 { background: #7c2d12; }
-.c15 { background: #6b21a8; }
-.c26 { background: #92400e; }
-.c31 { background: #0e7490; }
-
-.today {
-    border: 2px solid yellow;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-<h2>Planning 6èmes</h2>
-</header>
-
-<div class="controls">
-<select id="yearSelect"></select>
-<input type="date" id="searchDate">
-<button onclick="goToDate()">Rechercher</button>
-<button onclick="window.print()">Exporter PDF</button>
-</div>
-
-<div id="calendar"></div>
-
-<script>
-
-const cycle = [
-    {text:"4 & 2", class:"c42"},
-    {text:"5 & 3", class:"c53"},
-    {text:"6 & 4", class:"c64"},
-    {text:"1 & 5", class:"c15"},
-    {text:"2 & 6", class:"c26"},
-    {text:"3 & 1", class:"c31"}
-];
-
-const startReference = new Date("2026-01-01");
-const calendar = document.getElementById("calendar");
-const yearSelect = document.getElementById("yearSelect");
-
-for (let y = 2025; y <= 2030; y++) {
-    let option = document.createElement("option");
-    option.value = y;
-    option.text = y;
-    yearSelect.appendChild(option);
-}
-
-yearSelect.value = 2026;
-yearSelect.addEventListener("change", generateCalendar);
-
-function generateCalendar() {
-
-    calendar.innerHTML = "";
-
-    const selectedYear = parseInt(yearSelect.value);
-    const startDate = new Date(selectedYear + "-01-01");
-    const endDate = new Date(selectedYear + "-12-31");
-
-    let currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-
-        let diffDays = Math.floor((currentDate - startReference) / (1000*60*60*24));
-        let cycleIndex = ((diffDays % cycle.length) + cycle.length) % cycle.length;
-
-        let dayDiv = document.createElement("div");
-        dayDiv.className = "day " + cycle[cycleIndex].class;
-
-        let today = new Date();
-        if (currentDate.toDateString() === today.toDateString()) {
-            dayDiv.classList.add("today");
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning 6èmes 2026</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: white;
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+        }
+        h1 { margin: 20px 0; font-size: 1.5rem; }
+        
+        #calendar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        dayDiv.innerHTML = `
-            ${currentDate.getDate()}/${currentDate.getMonth()+1}
-            <strong>${cycle[cycleIndex].text}</strong>
-        `;
+        .day-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #1e293b;
+            border-radius: 12px;
+            border-left: 8px solid #38bdf8; /* Barre de couleur sur le côté */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
 
-        dayDiv.id = currentDate.toISOString().split("T")[0];
+        .date-text {
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
 
-        calendar.appendChild(dayDiv);
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-}
+        .cycle-info {
+            background: #334155;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #fbbf24; /* Couleur or pour le cycle */
+            min-width: 60px;
+        }
+    </style>
+</head>
+<body>
 
-function goToDate() {
-    let date = document.getElementById("searchDate").value;
-    if(date) {
-        document.getElementById(date)?.scrollIntoView({behavior:"smooth"});
-    }
-}
+    <h1>Planning 6èmes 2026</h1>
+    <div id="calendar"></div>
 
-generateCalendar();
+    <script>
+        const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
+        const startDate = new Date("2026-01-01");
+        const endDate = new Date("2026-12-31");
+        const calendar = document.getElementById("calendar");
 
-</script>
+        let currentDate = new Date(startDate);
 
+        while (currentDate <= endDate) {
+            const div = document.createElement("div");
+            div.className = "day-card";
+
+            // Calcul du cycle
+            const diffDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
+            const cycleIndex = diffDays % cycle.length;
+
+            // Formatage de la date : "jeudi 1 janvier 2026"
+            let options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            let dateStr = currentDate.toLocaleDateString('fr-FR', options);
+
+            // Petit bonus : transformer "1 janvier" en "1er janvier"
+            if (currentDate.getDate() === 1) {
+                dateStr = dateStr.replace(" 1 ", " 1er ");
+            }
+
+            div.innerHTML = `
+                <div class="date-text">${dateStr}</div>
+                <div class="cycle-info">${cycle[cycleIndex]}</div>
+            `;
+
+            calendar.appendChild(div);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+    </script>
 </body>
 </html>
