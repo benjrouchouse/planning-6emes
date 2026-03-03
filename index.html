@@ -67,17 +67,36 @@
             transition: all 0.3s;
         }
 
-        /* --- COULEURS DEMANDÉES --- */
-        .work-day { background-color: #cbd5e1; } /* Gris/Bleu standard pour la semaine */
-        .weekend { background-color: #475569; color: #cbd5e1; } /* Sombre pour le repos */
-        .vacation { background-color: #d1fae5; } /* Vert pastel très pâle (Vacances) */
-        .holiday { background-color: #fee2e2; } /* Rouge/Rose pastel très pâle (Férié) */
+        .work-day { background-color: #cbd5e1; } 
+        .weekend { background-color: #475569; color: #cbd5e1; } 
+        .vacation { background-color: #d1fae5; } 
+        .holiday { background-color: #fee2e2; } 
+
+        .date-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .status-label {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            opacity: 0.8;
+            background: rgba(0,0,0,0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
 
         .cycle-badge {
             background: rgba(0, 0, 0, 0.1);
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 10px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-weight: bold;
+            min-width: 55px;
+            text-align: center;
         }
 
         .highlight {
@@ -108,7 +127,6 @@
         ];
 
         function checkVacancesB(dateStr) {
-            // Vacances Zone B 2026
             if (dateStr >= "2026-02-14" && dateStr <= "2026-03-01") return true;
             if (dateStr >= "2026-04-11" && dateStr <= "2026-04-26") return true;
             if (dateStr >= "2026-07-04" && dateStr <= "2026-08-31") return true;
@@ -131,20 +149,29 @@
             const diffDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
             const cycleText = cycle[diffDays % cycle.length];
 
-            // Attribution des classes de couleur
+            let statusMarkup = "";
+            let cardClass = "work-day";
+
             if (joursFeries.includes(dateIso)) {
-                div.className = "day-card holiday";
-                div.innerHTML = `<span>${formatDate(currentDate)} 🚩</span> <span class="cycle-badge">FÉRIÉ</span>`;
+                cardClass = "holiday";
+                statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`;
             } else if (checkVacancesB(dateIso)) {
-                div.className = "day-card vacation";
-                div.innerHTML = `<span>${formatDate(currentDate)} 🏖️</span> <span class="cycle-badge">${cycleText}</span>`;
+                cardClass = "vacation";
+                statusMarkup = `<span class="status-label">🏖️ VACANCES</span>`;
             } else if (dayOfWeek === 0 || dayOfWeek === 6) {
-                div.className = "day-card weekend";
-                div.innerHTML = `<span>${formatDate(currentDate)}</span> <span class="cycle-badge">Repos</span>`;
-            } else {
-                div.className = "day-card work-day";
-                div.innerHTML = `<span>${formatDate(currentDate)}</span> <span class="cycle-badge">${cycleText}</span>`;
+                cardClass = "weekend";
+                statusMarkup = ""; // Plus de mention "Repos" ici
             }
+
+            div.className = `day-card ${cardClass}`;
+            
+            div.innerHTML = `
+                <div class="date-content">
+                    <span>${formatDate(currentDate)}</span>
+                    ${statusMarkup}
+                </div>
+                <div class="cycle-badge">${cycleText}</div>
+            `;
 
             calendar.appendChild(div);
             currentDate.setDate(currentDate.getDate() + 1);
@@ -157,8 +184,9 @@
         }
 
         function scrollToToday() {
-            const dateIso = new Date().toISOString().split('T')[0];
-            const element = document.getElementById("date-2026-" + dateIso.split('-')[1] + "-" + dateIso.split('-')[2]);
+            const now = new Date();
+            const dateIso = `2026-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const element = document.getElementById("date-" + dateIso);
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 element.classList.add('highlight');
