@@ -86,13 +86,6 @@
         .vacation { background-color: #d1fae5; } 
         .holiday { background-color: #fee2e2; } 
 
-        .date-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-align: left;
-        }
-
         .status-label {
             font-size: 0.7rem;
             font-weight: bold;
@@ -124,7 +117,7 @@
         .day-details-content {
             padding: 15px;
             border-top: 1px dashed rgba(0,0,0,0.1);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             line-height: 1.4;
             color: inherit;
         }
@@ -138,9 +131,10 @@
         .task-list strong {
             display: block;
             margin-bottom: 5px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #0f172a;
             border-bottom: 1px solid rgba(0,0,0,0.1);
+            text-transform: uppercase;
         }
 
         .task-item {
@@ -151,7 +145,7 @@
         }
 
         .day-card.active .day-details {
-            max-height: 350px;
+            max-height: 500px;
         }
 
         .highlight {
@@ -186,6 +180,10 @@
             "2026-11-01", "2026-11-11", "2026-12-25"
         ];
 
+        function isFirstFriday(date) {
+            return date.getDay() === 5 && date.getDate() <= 7;
+        }
+
         function checkVacancesB(dateStr) {
             if (dateStr >= "2026-02-14" && dateStr <= "2026-03-01") return true;
             if (dateStr >= "2026-04-11" && dateStr <= "2026-04-26") return true;
@@ -218,20 +216,55 @@
             let cardClass = "work-day";
             let extraContent = "";
 
-            // Contenu spécifique pour les lundis
-            if (dayOfWeek === 1) { 
-                extraContent = `
-                    <div class="task-list">
-                        <strong>MATIN</strong>
-                        <div class="task-item">🔹 Inspection des EPI</div>
-                        <div class="task-item">🔹 Vérification des ARI et air respirable</div>
-                        <strong style="margin-top:10px">APRÈS MIDI</strong>
-                        <div class="task-item">🏟️ Sport collectif (stade de la Jouvène)</div>
-                    </div>
-                `;
+            let matin = [];
+            let apresMidi = [];
+
+            // --- LOGIQUE DES JOURS ---
+            switch(dayOfWeek) {
+                case 1: // Lundi
+                    matin = ["Inspection des EPI", "Vérification des ARI et air respirable"];
+                    apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"];
+                    break;
+                case 2: // Mardi
+                    matin = ["Vérification des échelles à mains", "Vérification du lot tramway"];
+                    apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"];
+                    break;
+                case 3: // Mercredi
+                    matin = ["Vérification des thermiques"];
+                    apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"];
+                    break;
+                case 4: // Jeudi
+                    matin = ["Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil et tourner la vanne"];
+                    apresMidi = ["⚙️ Travail dans les services"];
+                    break;
+                case 5: // Vendredi
+                    matin = ["Vérification des pneumatiques"];
+                    if(isFirstFriday(currentDate)) matin.push("🚒 Protocole 3 du FI");
+                    apresMidi = ["🧹 Services / Propreté générale"];
+                    break;
+                case 6: // Samedi
+                    matin = ["🏗️ Manœuvre à Fert Recyclage"];
+                    apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"];
+                    break;
+                case 0: // Dimanche
+                    matin = ["🚑 Protocole des VSAV et changement d'ordre"];
+                    break;
             }
 
-            // Gestion des labels
+            if (matin.length > 0 || apresMidi.length > 0) {
+                extraContent = `<div class="task-list">`;
+                if(matin.length > 0) {
+                    extraContent += `<strong>MATIN</strong>`;
+                    matin.forEach(t => extraContent += `<div class="task-item">🔹 ${t}</div>`);
+                }
+                if(apresMidi.length > 0) {
+                    extraContent += `<strong style="margin-top:10px">APRÈS MIDI</strong>`;
+                    apresMidi.forEach(t => extraContent += `<div class="task-item">🔹 ${t}</div>`);
+                }
+                extraContent += `</div>`;
+            }
+
+            // --- LABELS ---
             if (joursFeries.includes(dateIso)) {
                 cardClass = "holiday";
                 statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`;
@@ -244,14 +277,6 @@
 
             div.className = `day-card ${cardClass}`;
             
-            // On ne crée la zone de détails que si du contenu existe
-            const detailsHtml = extraContent ? `
-                <div class="day-details">
-                    <div class="day-details-content">
-                        ${extraContent}
-                    </div>
-                </div>` : "";
-
             div.innerHTML = `
                 <div class="day-card-header" onclick="toggleCard(this, '${dateIso}')">
                     <div class="date-content">
@@ -260,7 +285,11 @@
                     </div>
                     <div class="cycle-badge">${cycleText}</div>
                 </div>
-                ${detailsHtml}
+                <div class="day-details">
+                    <div class="day-details-content">
+                        ${extraContent}
+                    </div>
+                </div>
             `;
 
             calendar.appendChild(div);
@@ -303,4 +332,5 @@
         });
     </script>
 </body>
-</html>
+    </html>
+    
