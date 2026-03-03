@@ -7,12 +7,12 @@
   "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "Planning SMT.png",
+      "src": "application%20smt.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "Planning SMT.png",
+      "src": "application%20smt.png",
       "sizes": "512x512",
       "type": "image/png"
     }
