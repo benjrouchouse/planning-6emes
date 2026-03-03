@@ -117,7 +117,7 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease-out;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.22);
             text-align: left;
         }
 
@@ -125,12 +125,34 @@
             padding: 15px;
             border-top: 1px dashed rgba(0,0,0,0.1);
             font-size: 0.9rem;
-            line-height: 1.5;
+            line-height: 1.4;
             color: inherit;
         }
 
+        .task-list {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+        }
+
+        .task-list strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: #0f172a;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 3px;
+        }
+
         .day-card.active .day-details {
-            max-height: 150px;
+            max-height: 350px;
         }
 
         .highlight {
@@ -140,8 +162,6 @@
             transform: scale(1.02);
             z-index: 10;
         }
-        
-        .highlight .day-details-content { color: #7f1d1d !important; }
     </style>
 </head>
 <body>
@@ -197,6 +217,20 @@
             let cardClass = "work-day";
             let detailTexte = "📅 Travail standard.";
 
+            // Logique de contenu pour les lundis avec spécifications précises
+            let lundiTaches = "";
+            if (dayOfWeek === 1) { 
+                lundiTaches = `
+                    <div class="task-list">
+                        <strong>MATIN</strong>
+                        <div class="task-item">🔹 vérification des EPI</div>
+                        <div class="task-item">🔹 vérification air respirable</div>
+                        <strong style="margin-top:10px">APRÈS MIDI</strong>
+                        <div class="task-item">🏃 Activités sportives</div>
+                    </div>
+                `;
+            }
+
             if (joursFeries.includes(dateIso)) {
                 cardClass = "holiday";
                 statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`;
@@ -204,7 +238,7 @@
             } else if (checkVacancesB(dateIso)) {
                 cardClass = "vacation";
                 statusMarkup = `<span class="status-label">🏖️ VACANCES</span>`;
-                detailTexte = "🏖️ Travail en période de vacances scolaires.";
+                detailTexte = "🏖️ Travail en vacances scolaires.";
             } else if (dayOfWeek === 0 || dayOfWeek === 6) {
                 cardClass = "weekend";
                 detailTexte = "🏠 Travail week-end.";
@@ -222,8 +256,8 @@
                 </div>
                 <div class="day-details">
                     <div class="day-details-content">
-                        <strong>Statut :</strong> ${detailTexte}<br>
-                        <strong>Horaires :</strong> 08h00 - 18h00
+                        <strong>Statut :</strong> ${detailTexte}
+                        ${lundiTaches}
                     </div>
                 </div>
             `;
