@@ -1,6 +1,6 @@
 {
   "name": "Planning 6èmes",
-  "short_name": "Planning",
+  "short_name": "Planning SMT",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
@@ -10,11 +10,13 @@
       "src": "1772575390613.png",
       "sizes": "192x192",
       "type": "image/png"
+      "purpose":"any maskable"
     },
     {
       "src": "1772575390613.png",
       "sizes": "512x512",
       "type": "image/png"
+      "purpose":"any maskable"
     }
   ]
 }
