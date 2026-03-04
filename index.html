@@ -9,315 +9,234 @@
     <link rel="apple-touch-icon" href="1772575390613.png">
     <link rel="manifest" href="manifest.json">
     <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #cbd5e1;
+            --accent: #38bdf8;
+            --text-dark: #1e293b;
+            --success: #22c55e;
+        }
+
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #0f172a;
+            background: var(--bg);
             color: white;
             margin: 0;
-            padding: 10px;
-            text-align: center;
+            padding: 0;
+            user-select: none;
         }
 
-        .header-sticky {
+        /* --- NAVIGATION --- */
+        .nav-tabs {
+            display: flex;
+            background: #1e293b;
+            padding: 5px;
             position: sticky;
             top: 0;
-            background: #0f172a;
-            padding: 15px 0;
-            z-index: 100;
-            border-bottom: 1px solid #334155;
+            z-index: 1000;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        input[type="date"] {
-            padding: 8px;
-            border-radius: 8px;
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
             border: none;
-            font-size: 1rem;
-        }
-
-        .btn-today {
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 8px;
+            background: none;
+            color: white;
             font-weight: bold;
             cursor: pointer;
-        }
-
-        #calendar {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-width: 500px;
-            margin: 20px auto;
-        }
-
-        .day-card {
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            border-radius: 10px;
-            color: #1e293b;
-            font-weight: 500;
-            scroll-margin-top: 140px;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .day-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .work-day { background-color: #cbd5e1; } 
-        .weekend { background-color: #475569; color: #cbd5e1; } 
-        .vacation { background-color: #d1fae5; } 
-        .holiday { background-color: #fee2e2; } 
-
-        .status-label {
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            opacity: 0.8;
-            background: rgba(0,0,0,0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .cycle-badge {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 4px 12px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            min-width: 55px;
-            text-align: center;
-        }
-
-        .day-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background: rgba(255, 255, 255, 0.25);
-            text-align: left;
-        }
-
-        .day-details-content {
-            padding: 15px;
-            border-top: 1px dashed rgba(0,0,0,0.1);
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: inherit;
-        }
-
-        .task-list {
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-        }
-
-        .task-list strong {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
-            color: #0f172a;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            text-transform: uppercase;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-bottom: 3px;
-        }
-
-        .day-card.active .day-details {
-            max-height: 600px;
-        }
-
-        .highlight {
-            background-color: #fecaca !important;
-            border: 2px solid #ef4444 !important;
-            color: #7f1d1d !important;
-            transform: scale(1.02);
-            z-index: 10;
-        }
-
-        #counter-section {
-            margin-top: 40px;
-            margin-bottom: 20px;
-            padding: 15px;
-            font-size: 0.7rem;
+            font-size: 0.9rem;
             opacity: 0.5;
-            border-top: 1px solid #334155;
+            transition: 0.3s;
         }
+
+        .tab-btn.active {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .view { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- PLANNING --- */
+        #calendar { display: flex; flex-direction: column; gap: 10px; max-width: 500px; margin: 0 auto; }
+        .day-card { background: var(--card-bg); color: var(--text-dark); border-radius: 12px; overflow: hidden; cursor: pointer; }
+        .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .day-details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.2); }
+        .day-card.active .day-details { max-height: 200px; padding: 15px; }
+
+        /* --- TÂCHES SMS (CHECKLIST) --- */
+        .cl-container { max-width: 500px; margin: 0 auto; }
+        .cl-header { 
+            background: #1e293b; padding: 20px; border-radius: 15px; 
+            margin-bottom: 20px; text-align: center; border: 1px solid #334155;
+        }
+        .progress-bar { height: 12px; background: #0f172a; border-radius: 6px; margin-top: 12px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+
+        .cl-item {
+            background: white; color: var(--text-dark); padding: 14px;
+            margin-bottom: 10px; border-radius: 12px; display: flex;
+            align-items: center; cursor: pointer; transition: 0.2s;
+            border-left: 5px solid var(--accent);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        .cl-item input { width: 22px; height: 22px; margin-right: 15px; cursor: pointer; accent-color: var(--success); }
+        
+        .cl-item .time { 
+            font-weight: 800; color: #64748b; margin-right: 12px; 
+            min-width: 55px; font-size: 0.85rem; background: #f1f5f9;
+            padding: 4px 6px; border-radius: 6px; text-align: center;
+        }
+
+        .cl-item .icon { font-size: 1.3rem; margin-right: 12px; }
+        .cl-item .text { font-weight: 500; font-size: 0.95rem; flex: 1; }
+
+        .cl-item.done { border-left-color: var(--success); background: #f8fafc; opacity: 0.7; }
+        .cl-item.done .text { text-decoration: line-through; color: #94a3b8; }
+
+        .btn-reset {
+            width: 100%; padding: 16px; background: #ef4444; color: white;
+            border: none; border-radius: 12px; font-weight: bold; margin-top: 20px;
+            font-size: 1rem; box-shadow: 0 4px 0 #b91c1c;
+        }
+        .btn-reset:active { transform: translateY(2px); box-shadow: none; }
+
+        #counter-section { text-align: center; margin-top: 40px; padding: 20px; opacity: 0.4; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
-    <div class="header-sticky">
-        <h1>Planning SMT</h1>
-        <div class="controls">
-            <input type="date" id="datePicker">
-            <button class="btn-today" onclick="scrollToToday()">Aujourd'hui</button>
+    <nav class="nav-tabs">
+        <button id="btn-plan" class="tab-btn active" onclick="switchView('planning')">📅 CALENDRIER</button>
+        <button id="btn-sms" class="tab-btn" onclick="switchView('sms')">📋 TÂCHES SMS</button>
+    </nav>
+
+    <div id="planning-view" class="view active">
+        <div style="text-align:center; margin-bottom:20px;">
+            <h2 style="margin:0 0 15px 0">Planning SMT 2026</h2>
+            <button class="btn-reset" style="background:var(--accent); box-shadow:0 4px 0 #0284c7; width:auto; padding:10px 20px;" onclick="scrollToToday()">Aller à Aujourd'hui</button>
+        </div>
+        <div id="calendar"></div>
+    </div>
+
+    <div id="sms-view" class="view">
+        <div class="cl-container">
+            <div class="cl-header">
+                <div id="cl-count" style="font-weight: bold; color: var(--accent); font-size: 1.1rem;">0 / 14 tâches effectuées</div>
+                <div class="progress-bar"><div id="cl-bar" class="progress-fill"></div></div>
+            </div>
+
+            <div id="checklist-list">
+                </div>
+
+            <button class="btn-reset" onclick="resetChecklist()">🔄 RÉINITIALISER LA GARDE</button>
         </div>
     </div>
 
-    <div id="calendar"></div>
-
     <div id="counter-section">
-        <p>Statistiques d'utilisation :</p>
         <div id="sfc68u3z7f41qjpyh46j7y1k415r2j2g791"></div>
         <script type="text/javascript" src="https://counter9.optistats.ovh/private/counter.js?c=68u3z7f41qjpyh46j7y1k415r2j2g791&down=async" async></script>
     </div>
 
     <script>
-        const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
-        const joursFeries = ["2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15", "2026-11-01", "2026-11-11", "2026-12-25"];
+        // --- DONNÉES CHRONOLOGIQUES AVEC LOGOS ---
+        const tasks = [
+            { t: "07h10", d: "Passation SMS", i: "🤝" },
+            { t: "07h20", d: "Vérif feuille de garde + VRCC", i: "🚔" },
+            { t: "07h30", d: "Appel du personnel", i: "📢" },
+            { t: "08h30", d: "Vérification des chambrées", i: "🛌" },
+            { t: "09h30", d: "Inventaires SKYUREL", i: "🐿️" },
+            { t: "14h00", d: "Appel du personnel", i: "📢" },
+            { t: "17h00", d: "Désarmer la VRCC", i: "🔓" },
+            { t: "17h30", d: "Couleurs (Cf État Major)", i: "🇫🇷" },
+            { t: "19h00", d: "Si corvée : Kimoce", i: "💻" },
+            { t: "19h30", d: "Tableau des postes (Demain)", i: "📝" },
+            { t: "20h00", d: "Désarmer le VSAV 2", i: "🚑" },
+            { t: "22h00", d: "Passer la feuille de garde", i: "📁" },
+            { t: "22h10", d: "Ronde SMS", i: "🔦" },
+            { t: "22h30", d: "Vérification cahier cuisine", i: "🍳" }
+        ];
 
-        function isFirstFriday(date) { return date.getDay() === 5 && date.getDate() <= 7; }
-
-        function checkVacancesB(dateStr) {
-            if (dateStr >= "2026-02-14" && dateStr <= "2026-03-01") return true;
-            if (dateStr >= "2026-04-11" && dateStr <= "2026-04-26") return true;
-            if (dateStr >= "2026-07-04" && dateStr <= "2026-08-31") return true;
-            if (dateStr >= "2026-10-17" && dateStr <= "2026-11-01") return true;
-            if (dateStr >= "2026-12-19" && dateStr <= "2026-12-31") return true;
-            return false;
+        function switchView(name) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(name + '-view').classList.add('active');
+            document.getElementById('btn-' + (name === 'planning' ? 'plan' : 'sms')).classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        const startDate = new Date(2026, 0, 1);
-        const endDate = new Date(2026, 11, 31);
-        const calendar = document.getElementById("calendar");
-        let currentDate = new Date(startDate);
-
-        while (currentDate <= endDate) {
-            const div = document.createElement("div");
-            const y = currentDate.getFullYear();
-            const m = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const d = String(currentDate.getDate()).padStart(2, '0');
-            const dateIso = `${y}-${m}-${d}`;
-            div.id = "date-" + dateIso;
-            
-            const dayOfWeek = currentDate.getDay(); 
-            const diffDays = Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24));
-            const cycleText = cycle[diffDays % cycle.length];
-
-            let statusMarkup = "";
-            let cardClass = "work-day";
-            let matin = [];
-            let apresMidi = [];
-
-            if (currentDate.getDate() === 1) {
-                matin.push("🩺 Vérification du DAE du standard");
-            }
-
-            switch(dayOfWeek) {
-                case 1:
-                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable");
-                    apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"];
-                    break;
-                case 2:
-                    matin.push("Vérification des échelles à mains", "Vérification du lot tramway");
-                    apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"];
-                    break;
-                case 3:
-                    matin.push("Vérification des thermiques");
-                    apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"];
-                    break;
-                case 4: // JEUDI
-                    matin.push("Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil (saisir sur Kimoce) + tourner la vanne 3 voies");
-                    apresMidi = ["⚙️ Travail dans les services"];
-                    break;
-                case 5:
-                    matin.push("Vérification des pneumatiques");
-                    if(isFirstFriday(currentDate)) matin.push("🚒 Protocole 3 du FI");
-                    apresMidi = ["🧹 Services / Propreté générale"];
-                    break;
-                case 6:
-                    matin.push("🏗️ Manœuvre secours routiers à Fert Recyclage");
-                    apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"];
-                    break;
-                case 0:
-                    matin.push("🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h");
-                    break;
-            }
-
-            let extraContent = "";
-            if (matin.length > 0 || apresMidi.length > 0) {
-                extraContent = `<div class="task-list">`;
-                if(matin.length > 0) {
-                    extraContent += `<strong>MATIN</strong>`;
-                    matin.forEach(t => extraContent += `<div class="task-item">🔹 ${t}</div>`);
-                }
-                if(apresMidi.length > 0) {
-                    extraContent += `<strong style="margin-top:10px">APRÈS MIDI</strong>`;
-                    apresMidi.forEach(t => extraContent += `<div class="task-item">🔹 ${t}</div>`);
-                }
-                extraContent += `</div>`;
-            }
-
-            if (joursFeries.includes(dateIso)) { cardClass = "holiday"; statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`; }
-            else if (checkVacancesB(dateIso)) { cardClass = "vacation"; statusMarkup = `<span class="status-label">🏖️ VACANCES</span>`; }
-            else if (dayOfWeek === 0 || dayOfWeek === 6) { cardClass = "weekend"; }
-
-            div.className = `day-card ${cardClass}`;
-            div.innerHTML = `
-                <div class="day-card-header" onclick="toggleCard(this, '${dateIso}')">
-                    <div class="date-content"><span>${formatDate(currentDate)}</span>${statusMarkup}</div>
-                    <div class="cycle-badge">${cycleText}</div>
+        function loadChecklist() {
+            const list = document.getElementById('checklist-list');
+            const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+            list.innerHTML = tasks.map((task, i) => `
+                <div class="cl-item ${saved[i] ? 'done' : ''}" onclick="toggleTask(${i})">
+                    <input type="checkbox" ${saved[i] ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${i})">
+                    <span class="time">${task.t}</span>
+                    <span class="icon">${task.i}</span>
+                    <span class="text">${task.d}</span>
                 </div>
-                <div class="day-details"><div class="day-details-content">${extraContent}</div></div>
-            `;
-            calendar.appendChild(div);
-            currentDate.setDate(currentDate.getDate() + 1);
+            `).join('');
+            updateProgress();
         }
 
-        function formatDate(date) {
-            let options = { weekday: 'long', day: 'numeric', month: 'long' };
-            let s = date.toLocaleDateString('fr-FR', options);
-            if (date.getDate() === 1) s = s.replace(" 1 ", " 1er ");
-            return s;
+        function toggleTask(i) {
+            let saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+            saved[i] = !saved[i];
+            localStorage.setItem('smt_tasks', JSON.stringify(saved));
+            if (window.navigator.vibrate) window.navigator.vibrate(20);
+            loadChecklist();
         }
 
-        function toggleCard(headerElement, dateIso) {
-            const card = headerElement.parentElement;
-            applyHighlight(dateIso);
-            card.classList.toggle('active');
+        function updateProgress() {
+            const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+            const done = Object.values(saved).filter(v => v).length;
+            const percent = (done / tasks.length) * 100;
+            document.getElementById('cl-count').innerText = `${done} / ${tasks.length} tâches effectuées`;
+            document.getElementById('cl-bar').style.width = percent + '%';
         }
 
-        function applyHighlight(dateIso) {
-            const currentHighlight = document.querySelector('.highlight');
-            if (currentHighlight) currentHighlight.classList.remove('highlight');
-            const element = document.getElementById("date-" + dateIso);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                element.classList.add('highlight');
+        function resetChecklist() {
+            if(confirm("Réinitialiser la journée ?")) {
+                localStorage.removeItem('smt_tasks');
+                loadChecklist();
             }
+        }
+
+        // --- GÉNÉRATION CALENDRIER ---
+        const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
+        const calendar = document.getElementById("calendar");
+        let d = new Date(2026, 0, 1);
+        while(d.getFullYear() === 2026) {
+            const iso = d.toISOString().split('T')[0];
+            const diff = Math.floor((d - new Date(2026,0,1))/(1000*60*60*24));
+            const card = document.createElement('div');
+            card.id = "date-"+iso;
+            card.className = "day-card";
+            card.innerHTML = `
+                <div class="day-card-header" onclick="this.parentElement.classList.toggle('active')">
+                    <span>${d.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'})}</span>
+                    <div style="background:rgba(0,0,0,0.1); padding:4px 10px; border-radius:10px;">${cycle[diff % 6]}</div>
+                </div>
+                <div class="day-details">Vérification matériel selon planning.</div>
+            `;
+            calendar.appendChild(card);
+            d.setDate(d.getDate()+1);
         }
 
         function scrollToToday() {
-            const now = new Date();
-            const dateIso = `2026-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            applyHighlight(dateIso);
+            const iso = new Date().toISOString().split('T')[0];
+            const el = document.getElementById("date-"+iso);
+            if(el) {
+                el.scrollIntoView({behavior:'smooth', block:'center'});
+                el.style.border = "3px solid #38bdf8";
+            }
         }
 
-        document.getElementById('datePicker').addEventListener('change', function() {
-            applyHighlight(this.value);
-        });
+        loadChecklist();
     </script>
 </body>
 </html>
