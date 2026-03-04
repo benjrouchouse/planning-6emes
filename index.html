@@ -165,13 +165,16 @@
             
             let matin = [], apresMidi = [];
             
-            // Tâches mensuelles
+            // Tâches mensuelles fixes
             if(d.getDate() === 1) matin.push("🩺 Vérification du DAE du standard");
-            if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils de mesures (explosimètres et dosimètres)");
 
             switch(dayOfWeek) {
                 case 1: 
                     matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"); 
+                    // Insertion après les ARI le 1er lundi
+                    if(isFirstMonday(d)) {
+                        matin.push("☢️ Contrôle des appareils de mesures (explosimètres et dosimètres)");
+                    }
                     apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"]; 
                     break;
                 case 2: 
