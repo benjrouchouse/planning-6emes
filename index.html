@@ -221,34 +221,38 @@
             let matin = [];
             let apresMidi = [];
 
+            if (currentDate.getDate() === 1) {
+                matin.push("🩺 Vérification du DAE du standard");
+            }
+
             switch(dayOfWeek) {
                 case 1:
-                    matin = ["📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"];
+                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable");
                     apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"];
                     break;
                 case 2:
-                    matin = ["Vérification des échelles à mains", "Vérification du lot tramway"];
+                    matin.push("Vérification des échelles à mains", "Vérification du lot tramway");
                     apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"];
                     break;
                 case 3:
-                    matin = ["Vérification des thermiques"];
+                    matin.push("Vérification des thermiques");
                     apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"];
                     break;
-                case 4:
-                    matin = ["Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil et tourner la vanne"];
+                case 4: // JEUDI
+                    matin.push("Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil (saisir sur Kimoce) + tourner la vanne 3 voies");
                     apresMidi = ["⚙️ Travail dans les services"];
                     break;
                 case 5:
-                    matin = ["Vérification des pneumatiques"];
+                    matin.push("Vérification des pneumatiques");
                     if(isFirstFriday(currentDate)) matin.push("🚒 Protocole 3 du FI");
                     apresMidi = ["🧹 Services / Propreté générale"];
                     break;
                 case 6:
-                    matin = ["🏗️ Manœuvre secours routiers à Fert Recyclage"];
+                    matin.push("🏗️ Manœuvre secours routiers à Fert Recyclage");
                     apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"];
                     break;
                 case 0:
-                    matin = ["🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h"];
+                    matin.push("🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h");
                     break;
             }
 
