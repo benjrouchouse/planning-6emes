@@ -11,9 +11,7 @@
     <style>
         :root {
             --bg: #0f172a;
-            --card-bg: #cbd5e1;
             --accent: #38bdf8;
-            --text-dark: #1e293b;
             --success: #22c55e;
         }
 
@@ -23,7 +21,6 @@
             color: white;
             margin: 0;
             padding: 0;
-            user-select: none;
         }
 
         /* --- NAVIGATION --- */
@@ -35,7 +32,6 @@
             top: 0;
             z-index: 1000;
             border-bottom: 2px solid var(--accent);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .tab-btn {
@@ -48,77 +44,73 @@
             cursor: pointer;
             font-size: 0.9rem;
             opacity: 0.5;
-            transition: 0.3s;
         }
 
-        .tab-btn.active {
-            opacity: 1;
-            color: var(--accent);
-        }
+        .tab-btn.active { opacity: 1; color: var(--accent); }
 
-        .view { display: none; padding: 15px; animation: fadeIn 0.3s; }
+        .view { display: none; padding: 10px; }
         .view.active { display: block; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- STYLES CALENDRIER (TES COULEURS) --- */
+        .header-sticky { text-align: center; padding: 10px 0; }
+        .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
+        input[type="date"] { padding: 8px; border-radius: 8px; border: none; }
+        .btn-today { background: var(--accent); color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; }
 
-        /* --- PLANNING --- */
-        #calendar { display: flex; flex-direction: column; gap: 10px; max-width: 500px; margin: 0 auto; }
-        .day-card { background: var(--card-bg); color: var(--text-dark); border-radius: 12px; overflow: hidden; cursor: pointer; }
-        .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .day-details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.2); }
-        .day-card.active .day-details { max-height: 200px; padding: 15px; }
-
-        /* --- TÂCHES SMS (CHECKLIST) --- */
-        .cl-container { max-width: 500px; margin: 0 auto; }
-        .cl-header { 
-            background: #1e293b; padding: 20px; border-radius: 15px; 
-            margin-bottom: 20px; text-align: center; border: 1px solid #334155;
-        }
-        .progress-bar { height: 12px; background: #0f172a; border-radius: 6px; margin-top: 12px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.6s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
-
-        .cl-item {
-            background: white; color: var(--text-dark); padding: 14px;
-            margin-bottom: 10px; border-radius: 12px; display: flex;
-            align-items: center; cursor: pointer; transition: 0.2s;
-            border-left: 5px solid var(--accent);
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-        }
-        .cl-item input { width: 22px; height: 22px; margin-right: 15px; cursor: pointer; accent-color: var(--success); }
+        #calendar { display: flex; flex-direction: column; gap: 8px; max-width: 500px; margin: 0 auto; }
+        .day-card { border-radius: 10px; color: #1e293b; font-weight: 500; scroll-margin-top: 140px; overflow: hidden; }
+        .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        .cl-item .time { 
-            font-weight: 800; color: #64748b; margin-right: 12px; 
-            min-width: 55px; font-size: 0.85rem; background: #f1f5f9;
-            padding: 4px 6px; border-radius: 6px; text-align: center;
-        }
+        /* Couleurs d'origine */
+        .work-day { background-color: #cbd5e1; } 
+        .weekend { background-color: #475569; color: #cbd5e1; } 
+        .vacation { background-color: #d1fae5; } 
+        .holiday { background-color: #fee2e2; } 
+        .highlight { border: 3px solid #ef4444 !important; transform: scale(1.02); }
 
-        .cl-item .icon { font-size: 1.3rem; margin-right: 12px; }
-        .cl-item .text { font-weight: 500; font-size: 0.95rem; flex: 1; }
+        .status-label { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.1); margin-left: 5px; }
+        .cycle-badge { background: rgba(0,0,0,0.1); padding: 4px 12px; border-radius: 10px; font-weight: bold; }
+        
+        .day-details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.25); text-align: left; }
+        .day-card.active .day-details { max-height: 600px; }
+        .day-details-content { padding: 15px; font-size: 0.85rem; line-height: 1.4; }
+        
+        .task-list { padding: 10px; background: rgba(255, 255, 255, 0.3); border-radius: 8px; }
+        .task-list strong { display: block; margin-bottom: 5px; font-size: 0.8rem; color: #0f172a; border-bottom: 1px solid rgba(0,0,0,0.1); text-transform: uppercase; }
+        .task-item { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; }
 
-        .cl-item.done { border-left-color: var(--success); background: #f8fafc; opacity: 0.7; }
-        .cl-item.done .text { text-decoration: line-through; color: #94a3b8; }
+        /* --- STYLES TACHES SMS (CHECKLIST) --- */
+        .cl-container { max-width: 500px; margin: 0 auto; }
+        .cl-header { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
+        .progress-bar { height: 10px; background: #0f172a; border-radius: 5px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.5s; }
+        
+        .cl-item { background: white; color: #1e293b; padding: 12px; margin-bottom: 8px; border-radius: 10px; display: flex; align-items: center; cursor: pointer; border-left: 5px solid var(--accent); }
+        .cl-item.done { border-left-color: var(--success); opacity: 0.6; }
+        .cl-item.done .text { text-decoration: line-through; }
+        .cl-item input { margin-right: 12px; transform: scale(1.3); }
+        .cl-item .time { font-weight: bold; color: #64748b; margin-right: 10px; font-size: 0.8rem; min-width: 45px; }
+        .cl-item .icon { font-size: 1.2rem; margin-right: 10px; }
+        
+        .btn-reset { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; }
 
-        .btn-reset {
-            width: 100%; padding: 16px; background: #ef4444; color: white;
-            border: none; border-radius: 12px; font-weight: bold; margin-top: 20px;
-            font-size: 1rem; box-shadow: 0 4px 0 #b91c1c;
-        }
-        .btn-reset:active { transform: translateY(2px); box-shadow: none; }
-
-        #counter-section { text-align: center; margin-top: 40px; padding: 20px; opacity: 0.4; font-size: 0.7rem; }
+        #counter-section { text-align: center; margin-top: 30px; padding: 20px; opacity: 0.4; font-size: 0.7rem; border-top: 1px solid #334155; }
     </style>
 </head>
 <body>
 
     <nav class="nav-tabs">
-        <button id="btn-plan" class="tab-btn active" onclick="switchView('planning')">📅 CALENDRIER</button>
-        <button id="btn-sms" class="tab-btn" onclick="switchView('sms')">📋 TÂCHES SMS</button>
+        <button id="btn-plan" class="tab-btn active" onclick="switchView('planning')">CALENDRIER</button>
+        <button id="btn-sms" class="tab-btn" onclick="switchView('sms')">TÂCHES SMS</button>
     </nav>
 
     <div id="planning-view" class="view active">
-        <div style="text-align:center; margin-bottom:20px;">
-            <h2 style="margin:0 0 15px 0">Planning SMT 2026</h2>
-            <button class="btn-reset" style="background:var(--accent); box-shadow:0 4px 0 #0284c7; width:auto; padding:10px 20px;" onclick="scrollToToday()">Aller à Aujourd'hui</button>
+        <div class="header-sticky">
+            <h1 style="margin:0 0 10px 0">Planning SMT</h1>
+            <div class="controls">
+                <input type="date" id="datePicker">
+                <button class="btn-today" onclick="scrollToToday()">Aujourd'hui</button>
+            </div>
         </div>
         <div id="calendar"></div>
     </div>
@@ -126,13 +118,10 @@
     <div id="sms-view" class="view">
         <div class="cl-container">
             <div class="cl-header">
-                <div id="cl-count" style="font-weight: bold; color: var(--accent); font-size: 1.1rem;">0 / 14 tâches effectuées</div>
+                <div id="cl-count" style="font-weight: bold; color: var(--accent);">0 / 14 tâches effectuées</div>
                 <div class="progress-bar"><div id="cl-bar" class="progress-fill"></div></div>
             </div>
-
-            <div id="checklist-list">
-                </div>
-
+            <div id="checklist-list"></div>
             <button class="btn-reset" onclick="resetChecklist()">🔄 RÉINITIALISER LA GARDE</button>
         </div>
     </div>
@@ -143,8 +132,10 @@
     </div>
 
     <script>
-        // --- DONNÉES CHRONOLOGIQUES AVEC LOGOS ---
-        const tasks = [
+        // --- DONNÉES ---
+        const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
+        const joursFeries = ["2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15", "2026-11-01", "2026-11-11", "2026-12-25"];
+        const smsTasks = [
             { t: "07h10", d: "Passation SMS", i: "🤝" },
             { t: "07h20", d: "Vérif feuille de garde + VRCC", i: "🚔" },
             { t: "07h30", d: "Appel du personnel", i: "📢" },
@@ -161,20 +152,89 @@
             { t: "22h30", d: "Vérification cahier cuisine", i: "🍳" }
         ];
 
+        function isFirstFriday(date) { return date.getDay() === 5 && date.getDate() <= 7; }
+        function checkVacancesB(dateStr) {
+            const v = [["2026-02-14","2026-03-01"], ["2026-04-11","2026-04-26"], ["2026-07-04","2026-08-31"], ["2026-10-17","2026-11-01"], ["2026-12-19","2026-12-31"]];
+            return v.some(p => dateStr >= p[0] && dateStr <= p[1]);
+        }
+
+        // --- GENERATION CALENDRIER ---
+        const calendar = document.getElementById("calendar");
+        let d = new Date(2026, 0, 1);
+        while(d.getFullYear() === 2026) {
+            const iso = d.toISOString().split('T')[0];
+            const dayOfWeek = d.getDay();
+            const diffDays = Math.floor((d - new Date(2026,0,1))/(1000*60*60*24));
+            
+            let matin = [], apresMidi = [];
+            if(d.getDate() === 1) matin.push("🩺 Vérification du DAE du standard");
+
+            switch(dayOfWeek) {
+                case 1: matin.push("📜 Code d'honneur", "Inspection EPI", "Vérif ARI"); apresMidi = ["🏟️ Sport"]; break;
+                case 2: matin.push("Échelles", "Lot Tramway"); apresMidi = ["💪 Muscu"]; break;
+                case 3: matin.push("Thermiques"); apresMidi = ["💧 Pompe"]; break;
+                case 4: matin.push("LSPCC/Sac PS", "⛽ Cuves Gasoil (Kimoce) + Vanne 3 voies"); apresMidi = ["⚙️ Services"]; break;
+                case 5: matin.push("Pneus"); if(d.getDate()<=7) matin.push("🚒 Protocole 3 FI"); apresMidi = ["🧹 Propreté"]; break;
+                case 6: matin.push("🏗️ Manœuvre Fert"); apresMidi = ["🧼 Nettoyage"]; break;
+                case 0: matin.push("🚑 VSAV / Ordre", "🧪 Oxygène avant 10h"); break;
+            }
+
+            let cls = "work-day", status = "";
+            if(joursFeries.includes(iso)) { cls = "holiday"; status = '<span class="status-label">🚩 FÉRIÉ</span>'; }
+            else if(checkVacancesB(iso)) { cls = "vacation"; status = '<span class="status-label">🏖️ VACANCES</span>'; }
+            else if(dayOfWeek === 0 || dayOfWeek === 6) cls = "weekend";
+
+            const card = document.createElement('div');
+            card.id = "date-"+iso;
+            card.className = "day-card " + cls;
+            card.innerHTML = `
+                <div class="day-card-header" onclick="toggleCard(this)">
+                    <div>${d.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'})}${status}</div>
+                    <div class="cycle-badge">${cycle[diffDays % 6]}</div>
+                </div>
+                <div class="day-details"><div class="day-details-content">
+                    <div class="task-list">
+                        <strong>MATIN</strong>${matin.map(t=>`<div class="task-item">🔹 ${t}</div>`).join('')}
+                        ${apresMidi.length?`<strong style="margin-top:10px">APRES-MIDI</strong>${apresMidi.map(t=>`<div class="task-item">🔹 ${t}</div>`).join('')}`:''}
+                    </div>
+                </div></div>
+            `;
+            calendar.appendChild(card);
+            d.setDate(d.getDate()+1);
+        }
+
+        // --- FONCTIONS ---
         function switchView(name) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(name + '-view').classList.add('active');
             document.getElementById('btn-' + (name === 'planning' ? 'plan' : 'sms')).classList.add('active');
-            window.scrollTo(0,0);
+        }
+
+        function toggleCard(header) {
+            const card = header.parentElement;
+            const wasActive = card.classList.contains('active');
+            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+            if(!wasActive) card.classList.add('active');
+        }
+
+        function scrollToToday() {
+            const iso = new Date().toISOString().split('T')[0];
+            const el = document.getElementById("date-"+iso);
+            if(el) {
+                document.querySelectorAll('.day-card').forEach(c => c.classList.remove('highlight'));
+                el.classList.add('highlight');
+                el.scrollIntoView({behavior:'smooth', block:'center'});
+                el.classList.add('active');
+            }
         }
 
         function loadChecklist() {
             const list = document.getElementById('checklist-list');
             const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
-            list.innerHTML = tasks.map((task, i) => `
+            list.innerHTML = smsTasks.map((task, i) => `
                 <div class="cl-item ${saved[i] ? 'done' : ''}" onclick="toggleTask(${i})">
-                    <input type="checkbox" ${saved[i] ? 'checked' : ''} onclick="event.stopPropagation(); toggleTask(${i})">
+                    <input type="checkbox" ${saved[i] ? 'checked' : ''}>
                     <span class="time">${task.t}</span>
                     <span class="icon">${task.i}</span>
                     <span class="text">${task.d}</span>
@@ -187,16 +247,14 @@
             let saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
             saved[i] = !saved[i];
             localStorage.setItem('smt_tasks', JSON.stringify(saved));
-            if (window.navigator.vibrate) window.navigator.vibrate(20);
             loadChecklist();
         }
 
         function updateProgress() {
             const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
             const done = Object.values(saved).filter(v => v).length;
-            const percent = (done / tasks.length) * 100;
-            document.getElementById('cl-count').innerText = `${done} / ${tasks.length} tâches effectuées`;
-            document.getElementById('cl-bar').style.width = percent + '%';
+            document.getElementById('cl-count').innerText = `${done} / ${smsTasks.length} tâches effectuées`;
+            document.getElementById('cl-bar').style.width = (done/smsTasks.length*100) + '%';
         }
 
         function resetChecklist() {
@@ -206,35 +264,10 @@
             }
         }
 
-        // --- GÉNÉRATION CALENDRIER ---
-        const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
-        const calendar = document.getElementById("calendar");
-        let d = new Date(2026, 0, 1);
-        while(d.getFullYear() === 2026) {
-            const iso = d.toISOString().split('T')[0];
-            const diff = Math.floor((d - new Date(2026,0,1))/(1000*60*60*24));
-            const card = document.createElement('div');
-            card.id = "date-"+iso;
-            card.className = "day-card";
-            card.innerHTML = `
-                <div class="day-card-header" onclick="this.parentElement.classList.toggle('active')">
-                    <span>${d.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'})}</span>
-                    <div style="background:rgba(0,0,0,0.1); padding:4px 10px; border-radius:10px;">${cycle[diff % 6]}</div>
-                </div>
-                <div class="day-details">Vérification matériel selon planning.</div>
-            `;
-            calendar.appendChild(card);
-            d.setDate(d.getDate()+1);
-        }
-
-        function scrollToToday() {
-            const iso = new Date().toISOString().split('T')[0];
-            const el = document.getElementById("date-"+iso);
-            if(el) {
-                el.scrollIntoView({behavior:'smooth', block:'center'});
-                el.style.border = "3px solid #38bdf8";
-            }
-        }
+        document.getElementById('datePicker').addEventListener('change', function(){
+            const el = document.getElementById("date-"+this.value);
+            if(el) { el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('active'); }
+        });
 
         loadChecklist();
     </script>
