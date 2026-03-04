@@ -155,8 +155,6 @@
             transform: scale(1.02);
             z-index: 10;
         }
-        
-        .highlight .day-details-content { color: #7f1d1d !important; }
     </style>
 </head>
 <body>
@@ -219,10 +217,9 @@
             let matin = [];
             let apresMidi = [];
 
-            // --- LOGIQUE DES JOURS ---
             switch(dayOfWeek) {
                 case 1: // Lundi
-                    matin = ["Inspection des EPI", "Vérification des ARI et air respirable"];
+                    matin = ["📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"];
                     apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"];
                     break;
                 case 2: // Mardi
@@ -243,11 +240,14 @@
                     apresMidi = ["🧹 Services / Propreté générale"];
                     break;
                 case 6: // Samedi
-                    matin = ["🏗️ Manœuvre à Fert Recyclage"];
+                    matin = ["🏗️ Manœuvre secours routiers à Fert Recyclage"];
                     apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"];
                     break;
                 case 0: // Dimanche
-                    matin = ["🚑 Protocole des VSAV et changement d'ordre"];
+                    matin = [
+                        "🚑 Protocole des VSAV et changement d'ordre",
+                        "🧪 Commande oxygène avant 10h"
+                    ];
                     break;
             }
 
@@ -264,7 +264,6 @@
                 extraContent += `</div>`;
             }
 
-            // --- LABELS ---
             if (joursFeries.includes(dateIso)) {
                 cardClass = "holiday";
                 statusMarkup = `<span class="status-label">🚩 FÉRIÉ</span>`;
@@ -332,5 +331,4 @@
         });
     </script>
 </body>
-    </html>
-    
+</html>
