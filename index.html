@@ -51,7 +51,7 @@
         .view { display: none; padding: 10px; }
         .view.active { display: block; }
 
-        /* --- STYLES CALENDRIER (TES COULEURS) --- */
+        /* --- STYLES CALENDRIER --- */
         .header-sticky { text-align: center; padding: 10px 0; }
         .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
         input[type="date"] { padding: 8px; border-radius: 8px; border: none; }
@@ -61,7 +61,6 @@
         .day-card { border-radius: 10px; color: #1e293b; font-weight: 500; scroll-margin-top: 140px; overflow: hidden; }
         .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Couleurs d'origine */
         .work-day { background-color: #cbd5e1; } 
         .weekend { background-color: #475569; color: #cbd5e1; } 
         .vacation { background-color: #d1fae5; } 
@@ -79,7 +78,7 @@
         .task-list strong { display: block; margin-bottom: 5px; font-size: 0.8rem; color: #0f172a; border-bottom: 1px solid rgba(0,0,0,0.1); text-transform: uppercase; }
         .task-item { display: flex; align-items: center; gap: 5px; margin-bottom: 3px; }
 
-        /* --- STYLES TACHES SMS (CHECKLIST) --- */
+        /* --- STYLES TACHES SMS --- */
         .cl-container { max-width: 500px; margin: 0 auto; }
         .cl-header { background: #1e293b; padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
         .progress-bar { height: 10px; background: #0f172a; border-radius: 5px; margin-top: 10px; overflow: hidden; }
@@ -132,24 +131,23 @@
     </div>
 
     <script>
-        // --- DONNÉES ---
         const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
         const joursFeries = ["2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15", "2026-11-01", "2026-11-11", "2026-12-25"];
         const smsTasks = [
             { t: "07h10", d: "Passation SMS", i: "🤝" },
-            { t: "07h20", d: "Vérif feuille de garde + VRCC", i: "🚔" },
+            { t: "07h20", d: "Vérification feuille de garde + armement VRCC", i: "🚔" },
             { t: "07h30", d: "Appel du personnel", i: "📢" },
             { t: "08h30", d: "Vérification des chambrées", i: "🛌" },
-            { t: "09h30", d: "Inventaires SKYUREL", i: "🐿️" },
+            { t: "09h30", d: "Vérification inventaires SKYUREL", i: "🐿️" },
             { t: "14h00", d: "Appel du personnel", i: "📢" },
             { t: "17h00", d: "Désarmer la VRCC", i: "🔓" },
-            { t: "17h30", d: "Couleurs (Cf État Major)", i: "🇫🇷" },
-            { t: "19h00", d: "Si corvée : Kimoce", i: "💻" },
-            { t: "19h30", d: "Tableau des postes (Demain)", i: "📝" },
+            { t: "17h30", d: "Couleurs (Cf feuille de service État major)", i: "🇫🇷" },
+            { t: "19h00", d: "Si corvée : renseigner KIMOCE", i: "💻" },
+            { t: "19h30", d: "Faire le tableau des postes du lendemain", i: "📝" },
             { t: "20h00", d: "Désarmer le VSAV 2", i: "🚑" },
             { t: "22h00", d: "Passer la feuille de garde", i: "📁" },
             { t: "22h10", d: "Ronde SMS", i: "🔦" },
-            { t: "22h30", d: "Vérification cahier cuisine", i: "🍳" }
+            { t: "22h30", d: "Vérification du cahier cuisine", i: "🍳" }
         ];
 
         function isFirstFriday(date) { return date.getDay() === 5 && date.getDate() <= 7; }
@@ -158,7 +156,6 @@
             return v.some(p => dateStr >= p[0] && dateStr <= p[1]);
         }
 
-        // --- GENERATION CALENDRIER ---
         const calendar = document.getElementById("calendar");
         let d = new Date(2026, 0, 1);
         while(d.getFullYear() === 2026) {
@@ -170,13 +167,34 @@
             if(d.getDate() === 1) matin.push("🩺 Vérification du DAE du standard");
 
             switch(dayOfWeek) {
-                case 1: matin.push("📜 Code d'honneur", "Inspection EPI", "Vérif ARI"); apresMidi = ["🏟️ Sport"]; break;
-                case 2: matin.push("Échelles", "Lot Tramway"); apresMidi = ["💪 Muscu"]; break;
-                case 3: matin.push("Thermiques"); apresMidi = ["💧 Pompe"]; break;
-                case 4: matin.push("LSPCC/Sac PS", "⛽ Cuves Gasoil (Kimoce) + Vanne 3 voies"); apresMidi = ["⚙️ Services"]; break;
-                case 5: matin.push("Pneus"); if(d.getDate()<=7) matin.push("🚒 Protocole 3 FI"); apresMidi = ["🧹 Propreté"]; break;
-                case 6: matin.push("🏗️ Manœuvre Fert"); apresMidi = ["🧼 Nettoyage"]; break;
-                case 0: matin.push("🚑 VSAV / Ordre", "🧪 Oxygène avant 10h"); break;
+                case 1: 
+                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"); 
+                    apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"]; 
+                    break;
+                case 2: 
+                    matin.push("Vérification des échelles à mains", "Vérification du lot tramway"); 
+                    apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"]; 
+                    break;
+                case 3: 
+                    matin.push("Vérification des thermiques"); 
+                    apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"]; 
+                    break;
+                case 4: 
+                    matin.push("Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil (saisir sur Kimoce) + tourner la vanne 3 voies"); 
+                    apresMidi = ["⚙️ Travail dans les services"]; 
+                    break;
+                case 5: 
+                    matin.push("Vérification des pneumatiques"); 
+                    if(d.getDate()<=7) matin.push("🚒 Protocole 3 du FI"); 
+                    apresMidi = ["🧹 Services / Propreté générale"]; 
+                    break;
+                case 6: 
+                    matin.push("🏗️ Manœuvre secours routiers à Fert Recyclage"); 
+                    apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"]; 
+                    break;
+                case 0: 
+                    matin.push("🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h"); 
+                    break;
             }
 
             let cls = "work-day", status = "";
@@ -195,7 +213,7 @@
                 <div class="day-details"><div class="day-details-content">
                     <div class="task-list">
                         <strong>MATIN</strong>${matin.map(t=>`<div class="task-item">🔹 ${t}</div>`).join('')}
-                        ${apresMidi.length?`<strong style="margin-top:10px">APRES-MIDI</strong>${apresMidi.map(t=>`<div class="task-item">🔹 ${t}</div>`).join('')}`:''}
+                        ${apresMidi.length?`<strong style="margin-top:10px">APRÈS-MIDI</strong>${apresMidi.map(t=>`<div class="task-item">🔹 ${t}</div>`).join('')}`:''}
                     </div>
                 </div></div>
             `;
@@ -203,7 +221,6 @@
             d.setDate(d.getDate()+1);
         }
 
-        // --- FONCTIONS ---
         function switchView(name) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -219,7 +236,8 @@
         }
 
         function scrollToToday() {
-            const iso = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const iso = `2026-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
             const el = document.getElementById("date-"+iso);
             if(el) {
                 document.querySelectorAll('.day-card').forEach(c => c.classList.remove('highlight'));
