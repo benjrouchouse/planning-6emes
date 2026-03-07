@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planning SMT</title>
+    <title>Planning SMT 2026</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="1772575390613.png">
@@ -21,6 +21,8 @@
             color: white;
             margin: 0;
             padding: 0;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         /* --- NAVIGATION --- */
@@ -54,19 +56,18 @@
         /* --- STYLES CALENDRIER --- */
         .header-sticky { text-align: center; padding: 10px 0; }
         .controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; }
-        input[type="date"] { padding: 8px; border-radius: 8px; border: none; }
-        .btn-today { background: var(--accent); color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; }
+        input[type="date"] { padding: 8px; border-radius: 8px; border: none; font-family: inherit; }
+        .btn-today { background: var(--accent); color: #0f172a; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         #calendar { display: flex; flex-direction: column; gap: 8px; max-width: 500px; margin: 0 auto; }
         .day-card { border-radius: 10px; color: #1e293b; font-weight: 500; scroll-margin-top: 140px; overflow: hidden; border: 3px solid transparent; transition: 0.2s; }
-        .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         
         .work-day { background-color: #cbd5e1; } 
         .weekend { background-color: #475569; color: #cbd5e1; } 
         .vacation { background-color: #d1fae5; } 
         .holiday { background-color: #fee2e2; } 
         
-        /* LA SURBRILLANCE ROUGE PERSISTANTE */
         .highlight { border-color: #ef4444 !important; transform: scale(1.02); z-index: 10; }
 
         .status-label { font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,0.1); margin-left: 5px; }
@@ -74,7 +75,7 @@
         
         .day-details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.25); text-align: left; }
         .day-card.active .day-details { max-height: 600px; }
-        .day-details-content { padding: 15px; font-size: 0.85rem; line-height: 1.4; }
+        .day-details-content { padding: 15px; font-size: 0.85rem; line-height: 1.4; -webkit-user-select: text; user-select: text; }
         
         .task-list { padding: 10px; background: rgba(255, 255, 255, 0.3); border-radius: 8px; }
         .task-list strong { display: block; margin-bottom: 5px; font-size: 0.8rem; color: #0f172a; border-bottom: 1px solid rgba(0,0,0,0.1); text-transform: uppercase; }
@@ -93,7 +94,7 @@
         .cl-item .time { font-weight: bold; color: #64748b; margin-right: 10px; font-size: 0.8rem; min-width: 45px; }
         .cl-item .icon { font-size: 1.2rem; margin-right: 10px; }
         
-        .btn-reset { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; }
+        .btn-reset { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; }
 
         #counter-section { text-align: center; margin-top: 30px; padding: 20px; opacity: 0.4; font-size: 0.7rem; border-top: 1px solid #334155; }
     </style>
@@ -159,11 +160,19 @@
         }
 
         const calendar = document.getElementById("calendar");
-        let d = new Date(2026, 0, 1);
+        
+        // CORRECTION : On force 12:00:00 pour éviter les bugs de décalage horaire (UTC vs Local)
+        let d = new Date(2026, 0, 1, 12, 0, 0); 
+        const dateRef = new Date(2026, 0, 1, 12, 0, 0);
+
         while(d.getFullYear() === 2026) {
-            const iso = d.toISOString().split('T')[0];
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const dayNum = String(d.getDate()).padStart(2, '0');
+            const iso = `${y}-${m}-${dayNum}`;
+            
             const dayOfWeek = d.getDay();
-            const diffDays = Math.floor((d - new Date(2026,0,1))/(1000*60*60*24));
+            const diffDays = Math.floor((d - dateRef)/(1000*60*60*24));
             
             let matin = [], apresMidi = [];
             if(d.getDate() === 1) matin.push("🩺 Vérification du DAE du standard");
@@ -231,17 +240,12 @@
             document.getElementById('btn-' + (name === 'planning' ? 'plan' : 'sms')).classList.add('active');
         }
 
-        // FONCTION DE SELECTION (BORDURE + OUVERTURE)
         function selectDay(card) {
             const wasActive = card.classList.contains('active');
-            
-            // On retire tout partout
             document.querySelectorAll('.day-card').forEach(c => {
                 c.classList.remove('active');
                 c.classList.remove('highlight');
             });
-
-            // On applique au nouveau
             card.classList.add('highlight');
             if(!wasActive) card.classList.add('active');
         }
@@ -292,10 +296,15 @@
         }
 
         document.getElementById('datePicker').addEventListener('change', function(){
+            if(!this.value) return;
             const el = document.getElementById("date-"+this.value);
-            if(el) { selectDay(el); el.scrollIntoView({behavior:'smooth', block:'center'}); }
+            if(el) { 
+                selectDay(el); 
+                el.scrollIntoView({behavior:'smooth', block:'center'}); 
+            }
         });
 
+        // Initialisation
         loadChecklist();
     </script>
 </body>
