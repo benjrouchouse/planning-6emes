@@ -95,10 +95,11 @@
         .proc-card { background: var(--card-bg); border-radius: 10px; margin-bottom: 10px; overflow: hidden; border: 1px solid #334155; }
         .proc-header { padding: 15px; background: #2d3e50; cursor: pointer; display: flex; justify-content: space-between; font-weight: bold; align-items: center; }
         .proc-content { max-height: 0; overflow: hidden; transition: 0.3s ease; background: #1e293b; }
-        .proc-card.active .proc-content { max-height: 1000px; padding: 15px; }
-        .proc-content ul { padding-left: 20px; margin: 0; }
-        .proc-content li { margin-bottom: 8px; font-size: 0.9rem; color: #cbd5e1; }
-        .important { color: #f87171; font-weight: bold; }
+        .proc-card.active .proc-content { max-height: 1500px; padding: 15px; }
+        .proc-content ul { padding-left: 15px; margin: 0; }
+        .proc-content li { margin-bottom: 10px; font-size: 0.85rem; color: #cbd5e1; list-style-type: none; border-left: 2px solid var(--accent); padding-left: 10px; }
+        .proc-content strong { color: var(--accent); }
+        .important { color: #f87171; font-weight: bold; border-left-color: #f87171 !important; }
 
         .btn-reset { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; }
         #counter-section { text-align: center; margin-top: 30px; padding: 20px; opacity: 0.4; font-size: 0.7rem; }
@@ -142,35 +143,37 @@
                 <div class="proc-header" onclick="toggleProc(this)">☎️ Numéros Utiles <span>+</span></div>
                 <div class="proc-content">
                     <ul>
-                        <li><strong>Standard :</strong> [À remplir]</li>
-                        <li><strong>Officier de Garde :</strong> [À remplir]</li>
-                        <li><strong>SAMU :</strong> 15</li>
-                        <li><strong>Police :</strong> 17</li>
+                        <li><strong>Standard BMPM :</strong> 04.96.11.75.00</li>
+                        <li><strong>Magasin Service Tech :</strong> 8.52.51</li>
+                        <li><strong>CODIS :</strong> 18 / 112</li>
                     </ul>
                 </div>
             </div>
 
             <div class="proc-card">
-                <div class="proc-header" onclick="toggleProc(this)">🚒 Vérifications Véhicules <span>+</span></div>
+                <div class="proc-header" onclick="toggleProc(this)">⛽ Procédure Carburant (GAS/LOG) <span>+</span></div>
                 <div class="proc-content">
+                    <p style="margin-top:0; font-size: 0.9rem; color: var(--accent); font-weight: bold;">1. Les Existants Carburant</p>
                     <ul>
-                        <li><strong>VRCC :</strong> Niveaux, Radio, Armement PS.</li>
-                        <li><strong>VSAV :</strong> Inventaire cellule, Plein oxygène.</li>
-                        <li><strong>CCF :</strong> Vérification pompes et matériel feu de forêt.</li>
+                        [span_0](start_span)<li>Saisie impérative le <strong>jeudi avant midi</strong> sur Kimoce[span_0](end_span).</li>
+                        [span_1](start_span)<li class="important">Si le jeudi est férié : la cellule carburant convient d'un autre jour par e-mail[span_1](end_span).</li>
+                    </ul>
+
+                    <p style="font-size: 0.9rem; color: var(--accent); font-weight: bold;">2. Livraisons : Pendant</p>
+                    <ul>
+                        [span_2](start_span)<li>Le livreur doit être <strong>obligatoirement accompagné</strong> pour éviter les erreurs (quantité, cuve, signature)[span_2](end_span).</li>
+                    </ul>
+
+                    <p style="font-size: 0.9rem; color: var(--accent); font-weight: bold;">3. Livraisons : Après</p>
+                    <ul>
+                        [span_3](start_span)<li>Documents remis : Bon de livraison, Bon de chargement, Lettre de voiture[span_3](end_span).</li>
+                        [span_4](start_span)<li><strong>Action Immédiate :</strong> Scanner et envoyer le <u>Bon de Livraison uniquement</u> à : <strong>gp_piecesengins@intrabat.bmpm.fr</strong>[span_4](end_span).</li>
+                        [span_5](start_span)<li class="important">Repasser au stylo la date et la quantité réelle sur le scan pour la lisibilité[span_5](end_span).</li>
+                        [span_6](start_span)<li>Renvoyer tous les originaux par courrier interne au magasin "service technique"[span_6](end_span).</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="proc-card">
-                <div class="proc-header" onclick="toggleProc(this)">📋 Consignes SMS <span>+</span></div>
-                <div class="proc-content">
-                    <ul>
-                        <li>Gestion des appels extérieurs.</li>
-                        <li>Ouverture/Fermeture des accès.</li>
-                        <li>Main courante informatique.</li>
-                    </ul>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -210,11 +213,7 @@
         const dateRef = new Date(2026, 0, 1, 12, 0, 0);
 
         while(d.getFullYear() === 2026) {
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const dayNum = String(d.getDate()).padStart(2, '0');
-            const iso = `${y}-${m}-${dayNum}`;
-            
+            const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             const dayOfWeek = d.getDay();
             const diffDays = Math.floor((d - dateRef)/(1000*60*60*24));
             
@@ -223,34 +222,15 @@
 
             switch(dayOfWeek) {
                 case 1: 
-                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"); 
-                    if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils de mesures (explosimètres et dosimètres)");
-                    apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"]; 
-                    break;
-                case 2: 
-                    matin.push("Vérification des échelles à mains", "Vérification du lot tramway"); 
-                    apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"]; 
-                    break;
-                case 3: 
-                    matin.push("Vérification des thermiques"); 
-                    apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"]; 
-                    break;
-                case 4: 
-                    matin.push("Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil (saisir sur Kimoce) + tourner la vanne 3 voies"); 
-                    apresMidi = ["⚙️ Travail dans les services"]; 
-                    break;
-                case 5: 
-                    matin.push("Vérification des pneumatiques"); 
-                    if(d.getDate()<=7) matin.push("🚒 Protocole 3 du FI"); 
-                    apresMidi = ["🧹 Services / Propreté générale"]; 
-                    break;
-                case 6: 
-                    matin.push("🏗️ Manœuvre secours routiers à Fert Recyclage"); 
-                    apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"]; 
-                    break;
-                case 0: 
-                    matin.push("🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h", "🚒 Inventaire des CCF"); 
-                    break;
+                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI"); 
+                    if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils de mesures");
+                    apresMidi = ["🏟️ Sport collectif"]; break;
+                case 2: matin.push("Vérification échelles", "Vérification lot tramway"); apresMidi = ["💪 Renforcement"]; break;
+                case 3: matin.push("Vérification thermiques"); apresMidi = ["💧 Mise en pompe"]; break;
+                case 4: matin.push("LSPCC et sac PS", "Cuves gasoil (Kimoce)"); apresMidi = ["⚙️ Travail services"]; break;
+                case 5: matin.push("Vérification pneumatiques"); if(d.getDate()<=7) matin.push("🚒 Protocole 3 du FI"); apresMidi = ["🧹 Services / Propreté"]; break;
+                case 6: matin.push("🏗️ Manœuvre SR"); apresMidi = ["🧼 Nettoyage containers"]; break;
+                case 0: matin.push("🚑 Protocole VSAV", "🧪 Commande oxygène", "🚒 Inventaire des CCF"); break;
             }
 
             let cls = "work-day", status = "";
