@@ -157,21 +157,21 @@
                 <div class="proc-content">
                     <p style="margin-top:0; font-size: 0.9rem; color: var(--accent); font-weight: bold;">1. Les Existants Carburant</p>
                     <ul>
-                        [span_2](start_span)<li>Saisie impérative le <strong>jeudi avant midi</strong> sur Kimoce pour générer les commandes[span_2](end_span).</li>
-                        [span_3](start_span)<li class="important">Si le jeudi est un jour férié, un e-mail est envoyé pour convenir d'un autre jour[span_3](end_span).</li>
+                        <li>Saisie impérative le <strong>jeudi avant midi</strong> sur Kimoce afin de générer les commandes combustibles.</li>
+                        <li class="important">Si le jeudi est un jour férié : la cellule carburant convient d'un autre jour par e-mail.</li>
                     </ul>
 
                     <p style="font-size: 0.9rem; color: var(--accent); font-weight: bold;">2. Livraisons : Pendant</p>
                     <ul>
-                        [span_4](start_span)<li>Le livreur doit être <strong>obligatoirement accompagné</strong> pour éviter tout problème (quantité, cuves, signature du bon)[span_4](end_span).</li>
+                        <li>Le livreur doit être <strong>obligatoirement accompagné</strong> afin d'éviter tout problème : erreur de quantité, remplissage des deux cuves, signature du bon de livraison.</li>
                     </ul>
 
                     <p style="font-size: 0.9rem; color: var(--accent); font-weight: bold;">3. Livraisons : Après</p>
                     <ul>
-                        [span_5](start_span)<li>Documents remis : Bon de livraison, Bon de chargement, Lettre de voiture[span_5](end_span).</li>
-                        [span_6](start_span)<li><strong>Action Immédiate :</strong> Scanner et envoyer le <u>Bon de Livraison uniquement</u> à : <strong>gp_piecesengins@intrabat.bmpm.fr</strong>[span_6](end_span).</li>
-                        [span_7](start_span)<li class="important">Repasser au stylo la date et la quantité réelle sur le scan pour assurer la lisibilité[span_7](end_span).</li>
-                        [span_8](start_span)<li>Renvoyer tous les documents originaux par courrier interne au magasin "service technique"[span_8](end_span).</li>
+                        <li>Documents remis : Bon de livraison, Bon de chargement, Lettre de voiture.</li>
+                        <li><strong>Action Immédiate :</strong> Scanner et envoyer le <u>Bon de Livraison uniquement</u> à : <strong>gp_piecesengins@intrabat.bmpm.fr</strong>.</li>
+                        <li class="important">Repasser au stylo la date et la quantité réelle sur le scan pour assurer la lisibilité.</li>
+                        <li>Renvoyer tous les documents originaux laissés par le livreur par courrier interne au magasin "service technique".</li>
                     </ul>
                 </div>
             </div>
@@ -223,15 +223,15 @@
 
             switch(dayOfWeek) {
                 case 1: 
-                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI"); 
-                    if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils de mesures");
-                    apresMidi = ["🏟️ Sport collectif"]; break;
-                case 2: matin.push("Vérification échelles", "Vérification lot tramway"); apresMidi = ["💪 Renforcement"]; break;
-                case 3: matin.push("Vérification thermiques"); apresMidi = ["💧 Mise en pompe"]; break;
-                case 4: matin.push("LSPCC et sac PS", "Cuves gasoil (Kimoce)"); apresMidi = ["⚙️ Travail services"]; break;
-                case 5: matin.push("Vérification pneumatiques"); if(d.getDate()<=7) matin.push("🚒 Protocole 3 du FI"); apresMidi = ["🧹 Services / Propreté"]; break;
-                case 6: matin.push("🏗️ Manœuvre SR"); apresMidi = ["🧼 Nettoyage containers"]; break;
-                case 0: matin.push("🚑 Protocole VSAV", "🧪 Commande oxygène", "🚒 Inventaire des CCF"); break;
+                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"); 
+                    if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils de mesures (explosimètres et dosimètres)");
+                    apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"]; break;
+                case 2: matin.push("Vérification des échelles à mains", "Vérification du lot tramway"); apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"]; break;
+                case 3: matin.push("Vérification des thermiques"); apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"]; break;
+                case 4: matin.push("Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil (saisir sur Kimoce) + tourner la vanne 3 voies"); apresMidi = ["⚙️ Travail dans les services"]; break;
+                case 5: matin.push("Vérification des pneumatiques"); if(d.getDate()<=7) matin.push("🚒 Protocole 3 du FI"); apresMidi = ["🧹 Services / Propreté générale"]; break;
+                case 6: matin.push("🏗️ Manœuvre secours routiers à Fert Recyclage"); apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"]; break;
+                case 0: matin.push("🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h", "🚒 Inventaire des CCF"); break;
             }
 
             let cls = "work-day", status = "";
