@@ -211,12 +211,14 @@
 
         const calendar = document.getElementById("calendar");
         let d = new Date(2026, 0, 1, 12, 0, 0); 
-        const dateRef = new Date(2026, 0, 1, 12, 0, 0);
+        // Calage précis : Le 28 mars 2026 doit être "6 & 4" (index 2 du cycle)
+        // Le 1er Janvier 2026 se retrouve donc à l'index 4 du cycle (2 & 6)
+        const startDayIndex = 4; 
 
+        let dayCounter = 0;
         while(d.getFullYear() === 2026) {
             const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             const dayOfWeek = d.getDay();
-            const diffDays = Math.floor((d - dateRef)/(1000*60*60*24));
             
             let matin = [], apresMidi = [];
             if(d.getDate() === 1) matin.push("🩺 Vérification du DAE du standard");
@@ -245,7 +247,7 @@
             card.innerHTML = `
                 <div class="day-card-header" onclick="selectDay(this.parentElement)">
                     <div>${d.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'})} ${status}</div>
-                    <div class="cycle-badge">${cycle[diffDays % 6]}</div>
+                    <div class="cycle-badge">${cycle[(dayCounter + startDayIndex) % 6]}</div>
                 </div>
                 <div class="day-details"><div class="day-details-content">
                     <div class="task-list">
@@ -256,6 +258,7 @@
             `;
             calendar.appendChild(card);
             d.setDate(d.getDate()+1);
+            dayCounter++;
         }
 
         function switchView(name) {
