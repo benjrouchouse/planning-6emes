@@ -1,247 +1,311 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SMT 2026 - Application</title>
-<style>
-:root {
-    --bg: #0f172a;
-    --accent: #38bdf8;
-    --success: #22c55e;
-    --card-bg: #1e293b;
-}
-body {
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: white;
-    -webkit-user-select: none;
-    user-select: none;
-}
-.nav-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 10px;
-}
-.nav-btn {
-    background: var(--card-bg);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 0;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.2s;
-    text-align: center;
-}
-.nav-btn:hover { background: #334155; transform: scale(1.03); }
-.nav-btn span { font-size: 2rem; margin-bottom: 5px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SMT 2026 - Mobile</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        :root {
+            --bg: #0f172a;
+            --accent: #38bdf8;
+            --success: #22c55e;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+        }
 
-.view { display: none; padding: 10px; animation: fadeIn 0.3s; }
-.view.active { display: block; }
-@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            -webkit-user-select: none;
+            user-select: none;
+            padding-bottom: 30px;
+        }
 
-/* --- Calendrier --- */
-.header-sticky { text-align: center; padding: 10px 0; }
-.controls { display:flex; justify-content:center; gap:10px; margin-bottom:15px; }
-input[type="date"] { padding:8px; border-radius:8px; border:none; font-family:inherit; }
-.btn-today { background: var(--accent); color:#0f172a; border:none; padding:8px 15px; border-radius:8px; font-weight:bold; cursor:pointer; }
-#calendar { display:flex; flex-direction:column; gap:8px; max-width:500px; margin:0 auto; }
-.day-card { border-radius:10px; color:#1e293b; font-weight:500; scroll-margin-top:140px; overflow:hidden; border:3px solid transparent; transition:0.2s; }
-.day-card-header { padding:15px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
-.work-day { background-color:#cbd5e1; }
-.weekend { background-color:#475569; color:#cbd5e1; }
-.vacation { background-color:#d1fae5; }
-.holiday { background-color:#fee2e2; }
-.highlight { border-color:#ef4444 !important; transform: scale(1.02); z-index:10; }
-.cycle-badge { background: rgba(0,0,0,0.1); padding:4px 12px; border-radius:10px; font-weight:bold; }
-.day-details { max-height:0; overflow:hidden; transition:0.3s; background: rgba(255,255,255,0.25); }
-.day-card.active .day-details { max-height:600px; }
-.day-details-content { padding:15px; font-size:0.85rem; -webkit-user-select:text; user-select:text; }
-.task-list strong { display:block; margin-bottom:5px; color:#0f172a; border-bottom:1px solid rgba(0,0,0,0.1); font-size:0.75rem; }
+        /* --- DASHBOARD (4 CARRES) --- */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
 
-/* --- Tâches SMS --- */
-.cl-container { max-width:500px; margin:0 auto; }
-.cl-header { background: var(--card-bg); padding:15px; border-radius:12px; margin-bottom:15px; text-align:center; }
-.progress-bar { height:10px; background:#0f172a; border-radius:5px; margin-top:10px; overflow:hidden; }
-.progress-fill { height:100%; background:var(--success); width:0%; transition:0.5s; }
-.cl-item { background:white; color:#1e293b; padding:12px; margin-bottom:8px; border-radius:10px; display:flex; align-items:center; cursor:pointer; border-left:5px solid var(--accent); }
-.cl-item.done { border-left-color:var(--success); opacity:0.6; }
-.cl-item.done .text { text-decoration:line-through; }
-.cl-item input { margin-right:12px; transform: scale(1.3); }
-.cl-item .time { font-weight:bold; color:#64748b; margin-right:10px; font-size:0.8rem; min-width:45px; }
-.cl-item .icon { font-size:1.2rem; margin-right:10px; }
+        .nav-btn {
+            background: var(--card-bg);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1; /* Force le carré parfait */
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-/* --- Procédures --- */
-.proc-container { max-width:500px; margin:0 auto; }
-.proc-card { background: var(--card-bg); border-radius:10px; margin-bottom:10px; overflow:hidden; border:1px solid #334155; }
-.proc-header { padding:15px; background:#2d3e50; cursor:pointer; display:flex; justify-content:space-between; font-weight:bold; align-items:center; }
-.proc-content { max-height:0; overflow:hidden; transition:0.3s ease; background:#1e293b; }
-.proc-card.active .proc-content { max-height:1500px; padding:15px; }
-.proc-content ul { padding-left:15px; margin:0; }
-.proc-content li { margin-bottom:10px; font-size:0.85rem; color:#cbd5e1; list-style-type:none; border-left:2px solid var(--accent); padding-left:10px; }
-.proc-content strong { color:var(--accent); }
-.important { color:#f87171; font-weight:bold; border-left-color:#f87171 !important; }
+        .nav-btn:active {
+            transform: scale(0.95);
+            background: #334155;
+        }
 
-/* --- Passation --- */
-.memo-container { max-width:500px; margin:0 auto; }
-.memo-header { background: var(--card-bg); padding:15px; border-radius:12px; margin-bottom:15px; text-align:center; font-weight:bold; }
-.memo-textarea { width:100%; padding:12px; border-radius:10px; border:none; resize:none; font-family:inherit; font-size:0.9rem; }
-.memo-btn { width:100%; padding:12px; background:var(--accent); color:#0f172a; border:none; border-radius:10px; font-weight:bold; margin-top:10px; cursor:pointer; }
+        .nav-btn span {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
 
-</style>
+        /* --- VUES --- */
+        .view { display: none; padding: 10px; animation: fadeIn 0.2s ease-out; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+
+        .back-btn {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 8px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* --- CALENDRIER --- */
+        #calendar { display: flex; flex-direction: column; gap: 8px; max-width: 500px; margin: 0 auto; }
+        .day-card { border-radius: 12px; color: #1e293b; font-weight: 600; scroll-margin-top: 20px; overflow: hidden; border: 3px solid transparent; }
+        .day-card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .work-day { background: #cbd5e1; }
+        .weekend { background: #475569; color: #f1f5f9; }
+        .vacation { background: #d1fae5; }
+        .holiday { background: #fee2e2; }
+        .highlight { border-color: #ef4444 !important; }
+        
+        .cycle-badge { background: rgba(0,0,0,0.1); padding: 4px 10px; border-radius: 8px; font-size: 0.9rem; }
+        .day-details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.3); }
+        .day-card.active .day-details { max-height: 500px; }
+        .task-content { padding: 15px; font-size: 0.9rem; }
+
+        /* --- CHECKLIST SMS --- */
+        .cl-container { max-width: 500px; margin: 0 auto; }
+        .cl-header { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; text-align: center; }
+        .progress-bar { height: 12px; background: #0f172a; border-radius: 6px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: 0.4s; }
+        .cl-item { background: white; color: #1e293b; padding: 14px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; border-left: 6px solid var(--accent); }
+        .cl-item.done { border-left-color: var(--success); opacity: 0.5; }
+        .cl-item.done .text { text-decoration: line-through; }
+        .cl-item input { margin-right: 15px; transform: scale(1.4); }
+
+        /* --- MEMO --- */
+        .memo-textarea { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 12px; 
+            background: var(--card-bg); 
+            color: white; 
+            border: 1px solid #334155; 
+            font-family: inherit; 
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn-reset { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
-<div class="nav-grid">
-    <div class="nav-btn" onclick="switchView('planning')"><span>📅</span>Calendrier</div>
-    <div class="nav-btn" onclick="switchView('sms')"><span>✅</span>Tâches SMS</div>
-    <div class="nav-btn" onclick="switchView('proc')"><span>📚</span>Procédures</div>
-    <div class="nav-btn" onclick="switchView('passation')"><span>📝</span>Passation</div>
-</div>
-
-<div id="planning-view" class="view active">
-    <div class="header-sticky">
-        <h1 style="margin:0 0 10px 0; font-size:1.5rem;">Planning SMT</h1>
-        <div class="controls">
-            <input type="date" id="datePicker">
-            <button class="btn-today" onclick="scrollToToday()">Aujourd'hui</button>
+    <div id="menu-view" class="view active">
+        <h1 style="text-align:center; margin: 20px 0; color: var(--accent);">SMT 2026</h1>
+        <div class="nav-grid">
+            <div class="nav-btn" onclick="switchView('planning')"><span>📅</span>Calendrier</div>
+            <div class="nav-btn" onclick="switchView('sms')"><span>✅</span>Tâches SMS</div>
+            <div class="nav-btn" onclick="switchView('proc')"><span>📚</span>Procédures</div>
+            <div class="nav-btn" onclick="switchView('passation')"><span>📝</span>Passation</div>
+        </div>
+        <div style="text-align: center; margin-top: 20px; opacity: 0.5; font-size: 0.8rem;">
+            Aujourd'hui : <span id="current-date-display"></span>
         </div>
     </div>
-    <div id="calendar"></div>
-</div>
 
-<div id="sms-view" class="view">
-    <div class="cl-container">
-        <div class="cl-header">
-            <div id="cl-count" style="font-weight:bold; color:var(--accent);">0 / 14 tâches</div>
-            <div class="progress-bar"><div id="cl-bar" class="progress-fill"></div></div>
+    <div id="planning-view" class="view">
+        <button class="back-btn" onclick="switchView('menu')">← Retour</button>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <input type="date" id="datePicker" style="flex:1; padding:10px; border-radius:8px; border:none;">
+            <button onclick="scrollToToday()" style="background:var(--accent); border:none; padding:10px; border-radius:8px; font-weight:bold;">Aujourd'hui</button>
         </div>
-        <div id="checklist-list"></div>
-        <button class="btn-reset" onclick="resetChecklist()">🔄 RÉINITIALISER LA JOURNÉE</button>
+        <div id="calendar"></div>
     </div>
-</div>
 
-<div id="proc-view" class="view">
-    <div class="proc-container">
-        <h2 style="text-align:center; color:var(--accent);">Guides & Procédures</h2>
-        <div class="proc-card">
-            <div class="proc-header" onclick="toggleProc(this)">☎️ Numéros Utiles <span>+</span></div>
-            <div class="proc-content">
-                <ul>
-                    <li><strong>Standard BMPM :</strong> 04.96.11.75.00</li>
-                    <li><strong>Magasin Service Tech :</strong> 8.52.51</li>
-                    <li><strong>CODIS :</strong> 18 / 112</li>
-                </ul>
+    <div id="sms-view" class="view">
+        <button class="back-btn" onclick="switchView('menu')">← Retour</button>
+        <div class="cl-container">
+            <div class="cl-header">
+                <div id="cl-count">0 / 14</div>
+                <div class="progress-bar"><div id="cl-bar" class="progress-fill"></div></div>
             </div>
+            <div id="checklist-list"></div>
+            <button class="btn-reset" onclick="resetChecklist()">🔄 RÉINITIALISER</button>
         </div>
     </div>
-</div>
 
-<div id="passation-view" class="view">
-    <div class="memo-container">
-        <div class="memo-header">Mémo Passation</div>
-        <textarea id="memoText" class="memo-textarea" rows="10" placeholder="Écrire vos mémos ici..."></textarea>
-        <button class="memo-btn" onclick="saveMemo()">💾 Enregistrer</button>
+    <div id="proc-view" class="view">
+        <button class="back-btn" onclick="switchView('menu')">← Retour</button>
+        <div style="background: var(--card-bg); padding: 15px; border-radius: 12px;">
+            <h3 style="color: var(--accent);">☎️ Numéros Utiles</h3>
+            <p>Standard BMPM : 04.96.11.75.00</p>
+            <p>Magasin Tech : 8.52.51</p>
+            <hr style="border: 0.5px solid #334155;">
+            <h3 style="color: var(--accent);">⛽ Carburant</h3>
+            <p>Saisie Kimoce : Jeudi avant 12h.</p>
+        </div>
     </div>
-</div>
+
+    <div id="passation-view" class="view">
+        <button class="back-btn" onclick="switchView('menu')">← Retour</button>
+        <textarea id="memoText" class="memo-textarea" rows="12" placeholder="Notez ici les éléments de passation..." oninput="saveMemo()"></textarea>
+        <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 10px;">💾 Sauvegarde automatique activée.</p>
+    </div>
 
 <script>
-/* --- Navigation --- */
-function switchView(name) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(name + '-view').classList.add('active');
-    window.scrollTo(0,0);
-}
-
-/* --- Procédures --- */
-function toggleProc(header) {
-    header.parentElement.classList.toggle('active');
-    header.querySelector('span').innerText = header.parentElement.classList.contains('active') ? '-' : '+';
-}
-
-/* --- Calendrier --- */
-const cycle = ["4 & 2","5 & 3","6 & 4","1 & 5","2 & 6","3 & 1"];
-const joursFeries = ["2026-01-01","2026-04-06","2026-05-01","2026-05-08","2026-05-14","2026-05-25","2026-07-14","2026-08-15","2026-11-01","2026-11-11","2026-12-25"];
-const calendar = document.getElementById("calendar");
-let d = new Date(2026,0,1,12,0,0);
-const startDayIndex = 4;
-let dayCounter=0;
-function isFirstMonday(date){return date.getDay()===1 && date.getDate()<=7;}
-function checkVacancesB(dateStr){const v=[["2026-02-14","2026-03-01"],["2026-04-11","2026-04-26"],["2026-07-04","2026-08-31"],["2026-10-17","2026-11-01"],["2026-12-19","2026-12-31"]];return v.some(p=>dateStr>=p[0] && dateStr<=p[1]);}
-while(d.getFullYear()===2026){
-    const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const dayOfWeek = d.getDay();
-    let matin=[],apresMidi=[];
-    switch(dayOfWeek){
-        case 1: matin.push("📜 Lecture du code d'honneur","Inspection des EPI","Vérification des ARI"); if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils"); apresMidi=["🏟️ Sport collectif"]; break;
-        case 2: matin.push("Vérification des échelles","Vérification lot tramway"); apresMidi=["💪 Renforcement musculaire"]; break;
-        case 3: matin.push("Vérification des thermiques"); apresMidi=["💧 Mise en pompe"]; break;
-        case 4: matin.push("Vérification LSPCC et sac PS","Contrôle cuves gasoil"); apresMidi=["⚙️ Travail dans les services"]; break;
-        case 5: matin.push("Vérification pneumatiques"); apresMidi=["🧹 Services / Propreté"]; break;
-        case 6: matin.push("🏗️ Manœuvre secours"); apresMidi=["🧼 Nettoyage containers"]; break;
-        case 0: matin.push("🚑 Protocole VSAV","🧪 Commande oxygène","🚒 Inventaire CCF"); break;
+    // --- LOGIQUE NAVIGATION ---
+    function switchView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id + '-view').classList.add('active');
+        window.scrollTo(0,0);
     }
-    let cls="work-day",status="";
-    if(joursFeries.includes(iso)){cls="holiday"; status='🚩';}else if(checkVacancesB(iso)){cls="vacation"; status='🏖️';}else if(dayOfWeek===0||dayOfWeek===6){cls="weekend";}
-    const card=document.createElement('div');
-    card.id="date-"+iso;
-    card.className="day-card "+cls;
-    card.innerHTML=`<div class="day-card-header" onclick="selectDay(this.parentElement)"><div>${d.toLocaleDateString('fr-FR',{weekday:'short', day:'numeric', month:'short'})} ${status}</div><div class="cycle-badge">${cycle[(dayCounter+startDayIndex)%6]}</div></div><div class="day-details"><div class="day-details-content"><div class="task-list"><strong>MATIN</strong>${matin.map(t=>`<div>🔹 ${t}</div>`).join('')}${apresMidi.length?`<strong style="margin-top:8px">APRÈS-MIDI</strong>${apresMidi.map(t=>`<div>🔹 ${t}</div>`).join('')}`:''}</div></div></div>`;
-    calendar.appendChild(card);
-    d.setDate(d.getDate()+1);
-    dayCounter++;
-}
-function selectDay(card){
-    const wasActive = card.classList.contains('active');
-    document.querySelectorAll('.day-card').forEach(c=>{c.classList.remove('active'); c.classList.remove('highlight');});
-    card.classList.add('highlight');
-    if(!wasActive) card.classList.add('active');
-}
-function scrollToToday(){
-    const now=new Date();
-    const iso=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-    const el=document.getElementById("date-"+iso);
-    if(el){ selectDay(el); el.scrollIntoView({behavior:'smooth', block:'center'});}
-}
 
-/* --- Tâches SMS --- */
-const smsTasks=[{t:"07h10",d:"Passation SMS",i:"🤝"},{t:"07h20",d:"Vérification feuille de garde",i:"🚔"},{t:"07h30",d:"Appel personnel",i:"📢"},{t:"08h30",d:"Vérification chambrées",i:"🛌"},{t:"09h30",d:"Vérification inventaires SKYUREL",i:"🐿️"},{t:"14h00",d:"Appel personnel",i:"📢"},{t:"17h00",d:"Désarmer VRCC",i:"🔓"},{t:"17h30",d:"Couleurs",i:"🇫🇷"},{t:"19h00",d:"Renseigner KIMOCE",i:"💻"},{t:"19h30",d:"Tableau postes",i:"📝"},{t:"20h00",d:"Désarmer VSAV2",i:"🚑"},{t:"22h00",d:"Passer feuille de garde",i:"📁"},{t:"22h10",d:"Ronde SMS",i:"🔦"},{t:"22h30",d:"Vérification cahier cuisine",i:"🍳"}];
-function loadChecklist(){
-    const list=document.getElementById('checklist-list');
-    const saved=JSON.parse(localStorage.getItem('smt_tasks'))||{};
-    list.innerHTML=smsTasks.map((task,i)=>`<div class="cl-item ${saved[i]?'done':''}" onclick="toggleTask(${i})"><input type="checkbox" ${saved[i]?'checked':''}><span class="time">${task.t}</span><span class="icon">${task.i}</span><span class="text">${task.d}</span></div>`).join('');
-    updateProgress();
-}
-function toggleTask(i){
-    let saved=JSON.parse(localStorage.getItem('smt_tasks'))||{};
-    saved[i]=!saved[i];
-    localStorage.setItem('smt_tasks',JSON.stringify(saved));
-    loadChecklist();
-}
-function updateProgress(){
-    const saved=JSON.parse(localStorage.getItem('smt_tasks'))||{};
-    const done=Object.values(saved).filter(v=>v).length;
-    document.getElementById('cl-count').innerText=`${done} / ${smsTasks.length} tâches effectuées`;
-    document.getElementById('cl-bar').style.width=(done/smsTasks.length*100)+'%';
-}
-function resetChecklist(){if(confirm("Réinitialiser la journée ?")){localStorage.removeItem('smt_tasks'); loadChecklist();}}
-document.getElementById('datePicker').addEventListener('change', function(){const el=document.getElementById("date-"+this.value); if(el){ selectDay(el); el.scrollIntoView({behavior:'smooth', block:'center'});}});
-loadChecklist();
+    // --- LOGIQUE CALENDRIER ---
+    const cycle = ["4 & 2","5 & 3","6 & 4","1 & 5","2 & 6","3 & 1"];
+    const startDayIndex = 4; // 1er Janvier 2026
+    
+    function initCalendar() {
+        const calDiv = document.getElementById("calendar");
+        let d = new Date(2026, 0, 1, 12, 0, 0);
+        let dayCounter = 0;
 
-/* --- Mémo Passation --- */
-function saveMemo(){
-    const val=document.getElementById('memoText').value;
-    localStorage.setItem('smt_memo',val);
-    alert("Mémo enregistré !");
-}
-document.getElementById('memoText').value = localStorage.getItem('smt_memo') || '';
+        while(d.getFullYear() === 2026) {
+            const iso = d.toISOString().split('T')[0];
+            const card = document.createElement('div');
+            card.id = "date-" + iso;
+            card.className = `day-card ${getCardClass(d, iso)}`;
+            
+            card.innerHTML = `
+                <div class="day-card-header" onclick="this.parentElement.classList.toggle('active')">
+                    <span>${d.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'})}</span>
+                    <span class="cycle-badge">${cycle[(dayCounter + startDayIndex) % 6]}</span>
+                </div>
+                <div class="day-details">
+                    <div class="task-content">${getTasks(d.getDay())}</div>
+                </div>
+            `;
+            calDiv.appendChild(card);
+            d.setDate(d.getDate() + 1);
+            dayCounter++;
+        }
+    }
+
+    function getCardClass(d, iso) {
+        if (["2026-01-01","2026-05-01","2026-07-14","2026-12-25"].includes(iso)) return "holiday";
+        if (d.getDay() === 0 || d.getDay() === 6) return "weekend";
+        return "work-day";
+    }
+
+    function getTasks(day) {
+        const tasks = [
+            "🚑 VSAV / 🧪 Oxygène / 🚒 CCF", // Dimanche
+            "📜 Code d'Honneur / 🎭 EPI / 💨 ARI", // Lundi
+            "🪜 Échelles / 🚃 Tramway / 💪 Sport", // Mardi
+            "🔥 Thermiques / 💧 Pompe", // Mercredi
+            "🧗 LSPCC / ⛽ Cuves / ⚙️ Services", // Jeudi
+            "🛞 Pneus / 🚒 Protocole / 🧹 Ménage", // Vendredi
+            "🏗️ SR Fert / 🧼 Containers" // Samedi
+        ];
+        return `🔹 ${tasks[day]}`;
+    }
+
+    function scrollToToday() {
+        const iso = new Date().toISOString().split('T')[0];
+        const el = document.getElementById("date-" + iso);
+        if(el) {
+            el.scrollIntoView({behavior:'smooth', block:'center'});
+            el.classList.add('highlight');
+            el.classList.add('active');
+        }
+    }
+
+    // --- LOGIQUE SMS & MEMO ---
+    const smsTasks = ["07:10 Passation","07:20 VRCC","07:30 Appel","08:30 Chambrées","09:30 SKYUREL","14:00 Appel","17:00 VRCC Off","17:30 Couleurs","19:00 Kimoce","19:30 Tableau","20:00 VSAV2 Off","22:00 Feuille de garde","22:10 Ronde","22:30 Cuisine"];
+
+    function loadChecklist() {
+        const container = document.getElementById('checklist-list');
+        const today = new Date().toDateString();
+        
+        // Auto-reset si nouveau jour
+        if(localStorage.getItem('last_date') !== today) {
+            localStorage.removeItem('smt_tasks');
+            localStorage.setItem('last_date', today);
+        }
+
+        const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+        container.innerHTML = smsTasks.map((t, i) => `
+            <div class="cl-item ${saved[i] ? 'done' : ''}" onclick="toggleTask(${i})">
+                <input type="checkbox" ${saved[i] ? 'checked' : ''}>
+                <span class="text">${t}</span>
+            </div>
+        `).join('');
+        updateProgress(saved);
+    }
+
+    function toggleTask(i) {
+        let saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+        saved[i] = !saved[i];
+        localStorage.setItem('smt_tasks', JSON.stringify(saved));
+        loadChecklist();
+    }
+
+    function updateProgress(saved) {
+        const done = Object.values(saved).filter(v => v).length;
+        const percent = (done / smsTasks.length) * 100;
+        document.getElementById('cl-count').innerText = `${done} / ${smsTasks.length}`;
+        document.getElementById('cl-bar').style.width = percent + '%';
+    }
+
+    function resetChecklist() {
+        if(confirm("Réinitialiser ?")) { localStorage.removeItem('smt_tasks'); loadChecklist(); }
+    }
+
+    function saveMemo() {
+        localStorage.setItem('smt_memo', document.getElementById('memoText').value);
+    }
+
+    // --- INIT ---
+    window.onload = () => {
+        initCalendar();
+        loadChecklist();
+        document.getElementById('memoText').value = localStorage.getItem('smt_memo') || '';
+        document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+        
+        // Gestion sélecteur de date
+        document.getElementById('datePicker').addEventListener('change', (e) => {
+            const el = document.getElementById("date-" + e.target.value);
+            if(el) { 
+                switchView('planning');
+                setTimeout(() => {
+                    el.scrollIntoView({behavior:'smooth', block:'center'});
+                    el.classList.add('highlight');
+                }, 100);
+            }
+        });
+    };
 </script>
 </body>
 </html>
