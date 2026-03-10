@@ -4,129 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SMT ÉLITE 2026</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
-    
     <style>
         :root {
-            --bg: #0f172a;
-            --accent: #38bdf8;
-            --success: #22c55e;
-            --card-bg: #1e293b;
-            --text: #f8fafc;
-            --warning: #f59e0b;
-            --vacation: #a855f7; /* Violet Zone B */
+            --bg: #0f172a; --accent: #38bdf8; --success: #22c55e;
+            --card-bg: #1e293b; --text: #f8fafc; --warning: #f59e0b;
+            --vacation: #a855f7;
         }
-
-        /* MODE NUIT ROUGE */
         body.night-mode {
-            --bg: #000000;
-            --accent: #ff0000;
-            --card-bg: #1a0000;
-            --text: #ff4444;
-            --success: #880000;
-            --vacation: #550055;
-            --warning: #aa0000;
+            --bg: #000; --accent: #ff0000; --card-bg: #1a0000;
+            --text: #ff4444; --success: #880000; --vacation: #550055;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0; padding: 0;
-            background: var(--bg); color: var(--text);
-            transition: background 0.3s;
-            -webkit-user-select: none; user-select: none;
-            padding-bottom: 40px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0; background: var(--bg); color: var(--text);
+            transition: 0.3s; padding-bottom: 40px; -webkit-user-select: none;
         }
 
-        /* --- DASHBOARD --- */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; }
-        
+        /* DASHBOARD */
         .nav-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 15px; padding: 15px; max-width: 500px; margin: 0 auto;
         }
-
         .nav-btn {
             background: var(--card-bg); border-radius: 20px;
             display: flex; flex-direction: column; align-items: center;
             justify-content: center; aspect-ratio: 1 / 1;
-            font-weight: bold; font-size: 1.1rem;
-            border: 1px solid #334155;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s;
+            font-weight: bold; border: 1px solid #334155; transition: 0.1s;
         }
-
-        .nav-btn:active { transform: scale(0.92); background: #334155; }
-        .nav-btn span { font-size: 2.8rem; margin-bottom: 10px; }
-
-        /* Alerte Carburant (Jeudi) */
+        .nav-btn:active { transform: scale(0.95); }
+        .nav-btn span { font-size: 2.5rem; margin-bottom: 10px; }
         .fuel-alert { border: 2px solid var(--warning) !important; animation: pulse 2s infinite; }
-        @keyframes pulse { 
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
+        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(245,158,11,0.4);} 70% {box-shadow: 0 0 0 10px rgba(245,158,11,0);} 100% {box-shadow: 0 0 0 0 rgba(245,158,11,0);} }
 
-        /* --- VUES --- */
-        .view { display: none; padding: 15px; animation: fadeIn 0.2s ease-out; }
+        /* VUES */
+        .view { display: none; padding: 15px; animation: fadeIn 0.2s; }
         .view.active { display: block; }
-        @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+        .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 10px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; }
 
-        .back-btn {
-            background: none; border: 1px solid var(--accent);
-            color: var(--accent); padding: 10px 20px; border-radius: 10px;
-            margin-bottom: 20px; font-weight: bold; cursor: pointer;
-        }
-
-        /* --- CALENDRIER --- */
-        .day-card { 
-            border-radius: 12px; color: #1e293b; font-weight: 600; 
-            margin-bottom: 10px; overflow: hidden; border: 3px solid transparent; 
-        }
+        /* CALENDRIER */
+        .day-card { border-radius: 12px; color: #1e293b; margin-bottom: 10px; overflow: hidden; border: 3px solid transparent; }
         .day-card.work-day { background: #cbd5e1; }
         .day-card.weekend { background: #475569; color: white; }
         .day-card.vacation { background: var(--vacation); color: white; }
         .day-card.today { border-color: #ef4444; }
+        .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.2); font-size: 0.85rem; }
+        .day-card.active .details { max-height: 500px; padding: 15px; }
 
-        .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { background: rgba(0,0,0,0.15); padding: 5px 12px; border-radius: 8px; font-size: 0.9rem; }
-        .details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(255,255,255,0.2); }
-        .day-card.active .details { max-height: 200px; padding: 15px; }
-
-        /* --- SMS & PASSATION --- */
-        .cl-item { 
-            background: white; color: #1e293b; padding: 15px; 
-            margin-bottom: 10px; border-radius: 12px; display: flex; align-items: center;
-            border-left: 6px solid var(--accent);
-        }
+        /* SMS & PROCEDURES */
+        .cl-item { background: white; color: #1e293b; padding: 12px; margin-bottom: 8px; border-radius: 10px; display: flex; align-items: center; border-left: 5px solid var(--accent); }
         .cl-item.done { opacity: 0.4; border-left-color: var(--success); }
         .cl-item.done span { text-decoration: line-through; }
-        .cl-item input { margin-right: 15px; transform: scale(1.5); }
-
-        .memo-area {
-            width: 100%; background: var(--card-bg); color: white;
-            border: 1px solid #334155; border-radius: 15px; padding: 15px;
-            font-size: 1rem; box-sizing: border-box; resize: none;
-        }
-
-        .btn-wa {
-            width: 100%; background: #25d366; color: white; border: none;
-            padding: 18px; border-radius: 15px; font-weight: bold; font-size: 1.1rem;
-            margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-
-        .night-toggle {
-            background: var(--card-bg); border: 1px solid var(--accent);
-            color: var(--accent); width: 45px; height: 45px; border-radius: 50%;
-            font-size: 1.2rem;
-        }
+        .proc-box { background: var(--card-bg); padding: 15px; border-radius: 15px; line-height: 1.4; margin-bottom: 10px; border: 1px solid #334155; }
+        .important { color: #f87171; font-weight: bold; }
+        
+        .btn-wa { width: 100%; background: #25d366; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <div style="display:flex; justify-content: space-between; padding: 20px 20px 0;">
         <h2 style="margin:0; color:var(--accent);">SMT Élite</h2>
-        <button class="night-toggle" onclick="document.body.classList.toggle('night-mode')">🌙</button>
+        <button onclick="document.body.classList.toggle('night-mode')" style="background:var(--card-bg); border:1px solid var(--accent); color:var(--accent); border-radius:50%; width:40px; height:40px;">🌙</button>
     </div>
 
     <div id="menu-view" class="view active">
@@ -136,10 +76,7 @@
             <div class="nav-btn" onclick="switchView('proc')"><span>📚</span>Procédures</div>
             <div class="nav-btn" onclick="switchView('passation')"><span>📝</span>Passation</div>
         </div>
-        <div style="text-align: center; margin-top: 30px; opacity: 0.6;">
-            <p id="display-date"></p>
-            <p id="display-cycle" style="font-weight: bold; color: var(--accent);"></p>
-        </div>
+        <p id="info-relance" style="text-align:center; opacity:0.6; font-size:0.9rem;"></p>
     </div>
 
     <div id="planning-view" class="view">
@@ -153,39 +90,46 @@
         <button onclick="resetSMS()" style="width:100%; background:#ef4444; color:white; border:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:10px;">🔄 RÉINITIALISER</button>
     </div>
 
-    <div id="passation-view" class="view">
-        <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        <textarea id="memoInput" class="memo-area" rows="12" placeholder="Saisir les infos de passation..." oninput="saveMemo()"></textarea>
-        <button class="btn-wa" onclick="shareWhatsApp()">📲 Partager via WhatsApp</button>
-    </div>
-
     <div id="proc-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        <div style="background:var(--card-bg); padding:20px; border-radius:15px; line-height:1.6;">
-            <h3 style="color:var(--accent); margin-top:0;">☎️ Urgence / Utile</h3>
-            <p>Standard : 04.96.11.75.00<br>Service Tech : 8.52.51</p>
-            <h3 style="color:var(--warning);">⛽ Carburant</h3>
-            <p><strong>Jeudi avant 12h00 :</strong> Saisie Kimoce impérative.<br>Vérifier la vanne 3 voies.</p>
+        <div class="proc-box">
+            <h3 style="color:var(--accent); margin-top:0;">☎️ Numéros</h3>
+            Standard BMPM : 04.96.11.75.00<br>Magasin Tech : 8.52.51<br>CODIS : 18 / 112
         </div>
+        <div class="proc-box">
+            <h3 style="color:var(--warning); margin-top:0;">⛽ Carburant</h3>
+            1. <strong>Saisie Kimoce :</strong> Jeudi avant midi.<br>
+            2. <strong>Livraison :</strong> Accompagner le livreur impérativement.<br>
+            3. <strong>Scan :</strong> Envoyer le scan du BL à <u>gp_piecesengins@intrabat.bmpm.fr</u>.<br>
+            <span class="important">Repasser au stylo la date et quantité sur le scan.</span>
+        </div>
+    </div>
+
+    <div id="passation-view" class="view">
+        <button class="back-btn" onclick="switchView('menu')">← Menu</button>
+        <textarea id="memo" style="width:100%; height:250px; background:var(--card-bg); color:white; border-radius:12px; padding:15px; box-sizing:border-box; border:1px solid #334155;" oninput="localStorage.setItem('smt_memo', this.value)"></textarea>
+        <button class="btn-wa" onclick="shareWA()">📤 Partager par WhatsApp</button>
     </div>
 
 <script>
     const cycle = ["6 & 4", "1 & 5", "2 & 6", "3 & 1", "4 & 2", "5 & 3"];
-    // Calage : Mardi 10 Mars 2026 = Cycle[0]
-    const startDate = new Date(2026, 2, 10);
+    const baseDate = new Date(2026, 2, 10); // 10 Mars 2026
+    const vacancesB = [{s:"2026-02-14",e:"2026-03-01"},{s:"2026-04-11",e:"2026-04-26"},{s:"2026-07-04",e:"2026-08-31"},{s:"2026-10-17",e:"2026-11-01"},{s:"2026-12-19",e:"2026-12-31"}];
 
-    const vacancesB = [
-        { s: "2026-02-14", e: "2026-03-01" },
-        { s: "2026-04-11", e: "2026-04-26" },
-        { s: "2026-07-04", e: "2026-08-31" },
-        { s: "2026-10-17", e: "2026-11-01" },
-        { s: "2026-12-19", e: "2026-12-31" }
-    ];
-
-    const tasksSMS = ["07:10 Passation","07:20 VRCC","07:30 Appel","08:30 Chambrées","09:30 SKYUREL","17:30 Couleurs","19:00 Kimoce","22:00 Ronde"];
-
-    function isVacB(dateStr) {
-        return vacancesB.some(v => dateStr >= v.s && dateStr <= v.e);
+    function getTasks(d) {
+        if(d.getDate() === 1) return "🩺 DAE Standard + " + getDaily(d);
+        return getDaily(d);
+    }
+    function getDaily(d) {
+        const day = d.getDay();
+        if(day===1) return "MATIN: Code d'honneur, EPI, ARI. APRÈS-MIDI: Sport (Jouvène). ☢️ 1er lundi: Explosimètres.";
+        if(day===2) return "MATIN: Échelles, Lot Tramway. APRÈS-MIDI: Renforcement (Monisport).";
+        if(day===3) return "MATIN: Thermiques. APRÈS-MIDI: Mise en pompe (FI/VDLHR).";
+        if(day===4) return "MATIN: LSPCC, Sac PS. Cuves Gasoil + Vanne 3 voies. APRÈS-MIDI: Services.";
+        if(day===5) return "MATIN: Pneumatiques. 1er vend: Protocole 3 FI. APRÈS-MIDI: Propreté.";
+        if(day===6) return "MATIN: Manœuvre SR (Fert Recyclage). APRÈS-MIDI: Nettoyage containers.";
+        if(day===0) return "MATIN: Protocole VSAV, Commande O2 (10h), Inventaire CCF.";
+        return "";
     }
 
     function switchView(id) {
@@ -195,98 +139,51 @@
     }
 
     function init() {
-        // Init Date Menu
         const today = new Date();
         const isoToday = today.toISOString().split('T')[0];
-        document.getElementById('display-date').innerText = today.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-        
-        // Alerte Fuel Jeudi
         if(today.getDay() === 4) document.getElementById('btn-cal').classList.add('fuel-alert');
 
-        // Init Calendrier
-        const calContainer = document.getElementById('calendar-container');
+        const cal = document.getElementById('calendar-container');
         let d = new Date(2026, 0, 1);
         let dayCounter = 0;
-
-        // Décalage pour aligner le 10 Mars sur l'index 0 du cycle
-        // Le 1er Janvier 2026 se trouve être à l'index 4 du cycle (4 & 2)
-        const offset = 4;
+        const offset = 4; // Pour caler le 10 Mars sur Index 0
 
         while(d.getFullYear() === 2026) {
             const iso = d.toISOString().split('T')[0];
-            const isToday = (iso === isoToday);
-            const isWeekend = (d.getDay() === 0 || d.getDay() === 6);
-            const isVac = isVacB(iso);
+            const isVac = vacancesB.some(v => iso >= v.s && iso <= v.e);
+            const isToday = iso === isoToday;
             
-            let typeCls = "work-day";
-            if (isVac) typeCls = "vacation";
-            else if (isWeekend) typeCls = "weekend";
-
             const card = document.createElement('div');
-            card.className = `day-card ${typeCls} ${isToday ? 'today active' : ''}`;
+            card.className = `day-card ${isVac?'vacation':(d.getDay()==0||d.getDay()==6?'weekend':'work-day')} ${isToday?'today active':''}`;
             card.innerHTML = `
                 <div class="card-header" onclick="this.parentElement.classList.toggle('active')">
-                    <span>${d.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'})} ${isVac ? '🏖️' : ''}</span>
-                    <span class="badge">${cycle[(dayCounter + offset) % 6]}</span>
+                    <span>${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} ${isVac?'🏖️':''}</span>
+                    <span style="background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:8px;">${cycle[(dayCounter+offset)%6]}</span>
                 </div>
-                <div class="details">
-                    🔹 Matin : Vérifications matériel<br>
-                    🔹 Après-midi : Sport / Travail services
-                </div>
+                <div class="details">${getTasks(d)}</div>
             `;
-            calContainer.appendChild(card);
-            
-            if(isToday) {
-                document.getElementById('display-cycle').innerText = "Aujourd'hui : " + cycle[(dayCounter + offset) % 6];
-            }
-
-            d.setDate(d.getDate() + 1);
-            dayCounter++;
+            cal.appendChild(card);
+            if(isToday) document.getElementById('info-relance').innerText = `Aujourd'hui : ${cycle[(dayCounter+offset)%6]}`;
+            d.setDate(d.getDate()+1); dayCounter++;
         }
 
-        // Init SMS
-        loadSMS();
-        
-        // Init Memo
-        document.getElementById('memoInput').value = localStorage.getItem('smt_memo') || '';
-    }
-
-    // SMS LOGIC
-    function loadSMS() {
-        const list = document.getElementById('sms-list');
-        const saved = JSON.parse(localStorage.getItem('smt_sms_tasks')) || {};
-        list.innerHTML = tasksSMS.map((t, i) => `
-            <div class="cl-item ${saved[i] ? 'done' : ''}" onclick="toggleSMS(${i})">
-                <input type="checkbox" ${saved[i] ? 'checked' : ''}>
-                <span>${t}</span>
-            </div>
-        `).join('');
+        const smsTasks = ["07:10 Passation","07:20 VRCC","07:30 Appel","08:30 Chambrées","09:30 SKYUREL","14:00 Appel","17:30 Couleurs","19:00 KIMOCE","22:00 Feuille de garde","22:10 Ronde","22:30 Cuisine"];
+        const saved = JSON.parse(localStorage.getItem('smt_sms')) || {};
+        document.getElementById('sms-list').innerHTML = smsTasks.map((t,i) => `
+            <div class="cl-item ${saved[i]?'done':''}" onclick="toggleSMS(${i})">
+                <input type="checkbox" ${saved[i]?'checked':''}><span>${t}</span>
+            </div>`).join('');
+        document.getElementById('memo').value = localStorage.getItem('smt_memo') || "";
     }
 
     function toggleSMS(i) {
-        let saved = JSON.parse(localStorage.getItem('smt_sms_tasks')) || {};
+        let saved = JSON.parse(localStorage.getItem('smt_sms')) || {};
         saved[i] = !saved[i];
-        localStorage.setItem('smt_sms_tasks', JSON.stringify(saved));
-        loadSMS();
+        localStorage.setItem('smt_sms', JSON.stringify(saved));
+        location.reload();
     }
-
-    function resetSMS() {
-        if(confirm("Réinitialiser la journée ?")) {
-            localStorage.removeItem('smt_sms_tasks');
-            loadSMS();
-        }
-    }
-
-    // MEMO LOGIC
-    function saveMemo() {
-        localStorage.setItem('smt_memo', document.getElementById('memoInput').value);
-    }
-
-    function shareWhatsApp() {
-        const text = document.getElementById('memoInput').value;
-        if(!text) return alert("Le mémo est vide.");
-        window.location.href = "whatsapp://send?text=" + encodeURIComponent("📝 *PASSATION SMT*\n\n" + text);
-    }
+    function resetSMS() { if(confirm("Reset ?")) { localStorage.removeItem('smt_sms'); location.reload(); }}
+    function shareWA() { window.location.href = "whatsapp://send?text=" + encodeURIComponent("📝 *PASSATION SMT*\n" + document.getElementById('memo').value); }
 
     window.onload = init;
 </script>
