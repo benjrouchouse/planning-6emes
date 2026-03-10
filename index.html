@@ -26,44 +26,35 @@
             user-select: none;
         }
 
-        /* --- MENU CARRÉ --- */
-        .main-menu{
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-            gap:15px;
-            padding:20px;
-            max-width:500px;
-            margin:auto;
-        }
-        .menu-card{
-            flex:1 1 45%;
-            min-width:140px;
-            height:140px;
+        /* --- NAVIGATION --- */
+        .nav-tabs {
+            display: flex;
             background: var(--card-bg);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            font-size:1.2rem;
-            font-weight:bold;
-            border-radius:15px;
-            cursor:pointer;
-            transition:0.2s;
-            color:white;
-            border:2px solid transparent;
-        }
-        .menu-card:hover{
-            transform:scale(1.05);
-            border-color:var(--accent);
-        }
-        .menu-card div{
-            line-height:1.4;
+            padding: 5px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--maccent);
         }
 
-        /* --- VIEWS --- */
+        .tab-btn {
+            flex: 1;
+            padding: 12px 5px;
+            border: none;
+            background: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+        }
+
+        .tab-btn.active { opacity: 1; color: var(--accent); }
+
         .view { display: none; padding: 10px; animation: fadeIn 0.3s; }
         .view.active { display: block; }
+
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* --- CALENDRIER --- */
@@ -113,30 +104,18 @@
         .important { color: #f87171; font-weight: bold; border-left-color: #f87171 !important; }
 
         .btn-reset { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 10px; font-weight: bold; margin-top: 15px; cursor: pointer; }
-
-        /* --- PASSATION / MÉMO --- */
-        .memo-container { max-width:500px; margin:0 auto; }
-        .memo-card { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .memo-card textarea { width: 100%; height: 100px; border-radius:8px; border:none; padding:10px; font-family:inherit; resize:none; background:#1e293b; color:white; }
-        .memo-card button { margin-top:8px; padding:10px 15px; border:none; border-radius:8px; background:var(--accent); color:#0f172a; font-weight:bold; cursor:pointer; }
-
         #counter-section { text-align: center; margin-top: 30px; padding: 20px; opacity: 0.4; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
-    <!-- ÉCRAN D'ACCUEIL -->
-    <div id="home-view" class="view active">
-        <div class="main-menu">
-            <div class="menu-card" onclick="switchView('planning')"><div>📅<br>Calendrier</div></div>
-            <div class="menu-card" onclick="switchView('sms')"><div>✅<br>Tâches SMS</div></div>
-            <div class="menu-card" onclick="switchView('proc')"><div>📚<br>Procédures</div></div>
-            <div class="menu-card" onclick="switchView('memo')"><div>📝<br>Passation</div></div>
-        </div>
-    </div>
+    <nav class="nav-tabs">
+        <button id="btn-plan" class="tab-btn active" onclick="switchView('planning')">Calendrier</button>
+        <button id="btn-sms" class="tab-btn" onclick="switchView('sms')">Tâches SMS</button>
+        <button id="btn-proc" class="tab-btn" onclick="switchView('proc')">Procédures</button>
+    </nav>
 
-    <!-- CALENDRIER -->
-    <div id="planning-view" class="view">
+    <div id="planning-view" class="view active">
         <div class="header-sticky">
             <h1 style="margin:0 0 10px 0; font-size: 1.5rem;">Planning SMT</h1>
             <div class="controls">
@@ -147,7 +126,6 @@
         <div id="calendar"></div>
     </div>
 
-    <!-- TÂCHES SMS -->
     <div id="sms-view" class="view">
         <div class="cl-container">
             <div class="cl-header">
@@ -155,14 +133,14 @@
                 <div class="progress-bar"><div id="cl-bar" class="progress-fill"></div></div>
             </div>
             <div id="checklist-list"></div>
-            <button class="btn-reset" onclick="resetChecklist()">🔄 RÉINITIALISER</button>
+            <button class="btn-reset" onclick="resetChecklist()">🔄 RÉINITIALISER LA GARDE</button>
         </div>
     </div>
 
-    <!-- PROCÉDURES -->
     <div id="proc-view" class="view">
         <div class="proc-container">
-            <h2 style="text-align:center; color:var(--accent);">Guides & Procédures</h2>
+            <h2 style="text-align: center; color: var(--accent);">Guides & Procédures</h2>
+            
             <div class="proc-card">
                 <div class="proc-header" onclick="toggleProc(this)">☎️ Numéros Utiles <span>+</span></div>
                 <div class="proc-content">
@@ -173,37 +151,29 @@
                     </ul>
                 </div>
             </div>
+
             <div class="proc-card">
                 <div class="proc-header" onclick="toggleProc(this)">⛽ Procédure Carburant (GAS/LOG) <span>+</span></div>
                 <div class="proc-content">
-                    <p style="margin-top:0; font-size:0.9rem; color:var(--accent); font-weight:bold;">1. Les Existants Carburant</p>
+                    <p style="margin-top:0; font-size: 0.9rem; color: var(--accent); font-weight: bold;">1. Les Existants Carburant</p>
                     <ul>
                         <li>Saisie impérative le <strong>jeudi avant midi</strong> sur Kimoce afin de générer les commandes combustibles.</li>
                         <li class="important">Si le jeudi est un jour férié : la cellule carburant convient d'un autre jour par e-mail.</li>
                     </ul>
-                    <p style="font-size:0.9rem; color:var(--accent); font-weight:bold;">2. Livraisons : Pendant</p>
+
+                    <p style="font-size: 0.9rem; color: var(--accent); font-weight: bold;">2. Livraisons : Pendant</p>
                     <ul>
-                        <li>Le livreur doit être <strong>obligatoirement accompagné</strong> pour éviter tout problème.</li>
+                        <li>Le livreur doit être <strong>obligatoirement accompagné</strong> afin d'éviter tout problème : erreur de quantité, remplissage des deux cuves, signature du bon de livraison.</li>
                     </ul>
-                    <p style="font-size:0.9rem; color:var(--accent); font-weight:bold;">3. Livraisons : Après</p>
+
+                    <p style="font-size: 0.9rem; color: var(--accent); font-weight: bold;">3. Livraisons : Après</p>
                     <ul>
                         <li>Documents remis : Bon de livraison, Bon de chargement, Lettre de voiture.</li>
-                        <li><strong>Action immédiate :</strong> Scanner et envoyer le <u>Bon de Livraison uniquement</u> à : <strong>gp_piecesengins@intrabat.bmpm.fr</strong>.</li>
-                        <li class="important">Repasser au stylo la date et la quantité réelle sur le scan pour lisibilité.</li>
-                        <li>Renvoyer tous les documents originaux au magasin "service technique".</li>
+                        <li><strong>Action Immédiate :</strong> Scanner et envoyer le <u>Bon de Livraison uniquement</u> à : <strong>gp_piecesengins@intrabat.bmpm.fr</strong>.</li>
+                        <li class="important">Repasser au stylo la date et la quantité réelle sur le scan pour assurer la lisibilité.</li>
+                        <li>Renvoyer tous les documents originaux laissés par le livreur par courrier interne au magasin "service technique".</li>
                     </ul>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PASSATION / MÉMO -->
-    <div id="memo-view" class="view">
-        <div class="memo-container">
-            <h2 style="text-align:center; color:var(--accent);">Passation / Mémo</h2>
-            <div class="memo-card">
-                <textarea id="memo-text" placeholder="Écrire vos notes ici..."></textarea>
-                <button onclick="saveMemo()">💾 Sauvegarder</button>
             </div>
         </div>
     </div>
@@ -214,60 +184,143 @@
     </div>
 
     <script>
-        /* --- CALENDRIER --- */
         const cycle = ["4 & 2", "5 & 3", "6 & 4", "1 & 5", "2 & 6", "3 & 1"];
-        const joursFeries = ["2026-01-01","2026-04-06","2026-05-01","2026-05-08","2026-05-14","2026-05-25","2026-07-14","2026-08-15","2026-11-01","2026-11-11","2026-12-25"];
+        const joursFeries = ["2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15", "2026-11-01", "2026-11-11", "2026-12-25"];
         const smsTasks = [
-            { t:"07h10",d:"Passation SMS",i:"🤝" },
-            { t:"07h20",d:"Vérification feuille de garde + armement VRCC",i:"🚔" },
-            { t:"07h30",d:"Appel du personnel",i:"📢" },
-            { t:"08h30",d:"Vérification des chambrées",i:"🛌" },
-            { t:"09h30",d:"Vérification inventaires SKYUREL",i:"🐿️" },
-            { t:"14h00",d:"Appel du personnel",i:"📢" },
-            { t:"17h00",d:"Désarmer la VRCC",i:"🔓" },
-            { t:"17h30",d:"Couleurs",i:"🇫🇷" },
-            { t:"19h00",d:"Si corvée : renseigner KIMOCE",i:"💻" },
-            { t:"19h30",d:"Tableau des postes du lendemain",i:"📝" },
-            { t:"20h00",d:"Désarmer le VSAV 2",i:"🚑" },
-            { t:"22h00",d:"Passer la feuille de garde",i:"📁" },
-            { t:"22h10",d:"Ronde SMS",i:"🔦" },
-            { t:"22h30",d:"Vérification du cahier cuisine",i:"🍳" }
+            { t: "07h10", d: "Passation SMS", i: "🤝" },
+            { t: "07h20", d: "Vérification feuille de garde + armement VRCC", i: "🚔" },
+            { t: "07h30", d: "Appel du personnel", i: "📢" },
+            { t: "08h30", d: "Vérification des chambrées", i: "🛌" },
+            { t: "09h30", d: "Vérification inventaires SKYUREL", i: "🐿️" },
+            { t: "14h00", d: "Appel du personnel", i: "📢" },
+            { t: "17h00", d: "Désarmer la VRCC", i: "🔓" },
+            { t: "17h30", d: "Couleurs", i: "🇫🇷" },
+            { t: "19h00", d: "Si corvée : renseigner KIMOCE", i: "💻" },
+            { t: "19h30", d: "Tableau des postes du lendemain", i: "📝" },
+            { t: "20h00", d: "Désarmer le VSAV 2", i: "🚑" },
+            { t: "22h00", d: "Passer la feuille de garde", i: "📁" },
+            { t: "22h10", d: "Ronde SMS", i: "🔦" },
+            { t: "22h30", d: "Vérification du cahier cuisine", i: "🍳" }
         ];
 
-        /* --- MÉMO --- */
-        function saveMemo() {
-            const val = document.getElementById('memo-text').value;
-            localStorage.setItem('smt_memo', val);
-            alert("Mémo sauvegardé ✅");
-        }
-        function loadMemo() {
-            const val = localStorage.getItem('smt_memo') || "";
-            document.getElementById('memo-text').value = val;
+        function isFirstMonday(date) { return date.getDay() === 1 && date.getDate() <= 7; }
+        function checkVacancesB(dateStr) {
+            const v = [["2026-02-14","2026-03-01"], ["2026-04-11","2026-04-26"], ["2026-07-04","2026-08-31"], ["2026-10-17","2026-11-01"], ["2026-12-19","2026-12-31"]];
+            return v.some(p => dateStr >= p[0] && dateStr <= p[1]);
         }
 
-        /* --- SWITCH VIEW --- */
-        function switchView(name){
-            document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-            if(name==='home'){document.getElementById('home-view').classList.add('active');}
-            else {document.getElementById(name+'-view').classList.add('active');}
-            if(name==='memo'){loadMemo();}
+        const calendar = document.getElementById("calendar");
+        let d = new Date(2026, 0, 1, 12, 0, 0); 
+        // Calage précis : Le 28 mars 2026 doit être "6 & 4" (index 2 du cycle)
+        // Le 1er Janvier 2026 se retrouve donc à l'index 4 du cycle (2 & 6)
+        const startDayIndex = 4; 
+
+        let dayCounter = 0;
+        while(d.getFullYear() === 2026) {
+            const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            const dayOfWeek = d.getDay();
+            
+            let matin = [], apresMidi = [];
+            if(d.getDate() === 1) matin.push("🩺 Vérification du DAE du standard");
+
+            switch(dayOfWeek) {
+                case 1: 
+                    matin.push("📜 Lecture du code d'honneur", "Inspection des EPI", "Vérification des ARI et air respirable"); 
+                    if(isFirstMonday(d)) matin.push("☢️ Contrôle des appareils de mesures (explosimètres et dosimètres)");
+                    apresMidi = ["🏟️ Sport collectif (stade de la Jouvène)"]; break;
+                case 2: matin.push("Vérification des échelles à mains", "Vérification du lot tramway"); apresMidi = ["💪 Renforcement musculaire (MONISPORT GPTS)"]; break;
+                case 3: matin.push("Vérification des thermiques"); apresMidi = ["💧 Mise en pompe / (FI / VDLHR)"]; break;
+                case 4: matin.push("Vérification des LSPCC et sac PS (FI)", "Contrôle des cuves gasoil (saisir sur Kimoce) + tourner la vanne 3 voies"); apresMidi = ["⚙️ Travail dans les services"]; break;
+                case 5: matin.push("Vérification des pneumatiques"); if(d.getDate()<=7) matin.push("🚒 Protocole 3 du FI"); apresMidi = ["🧹 Services / Propreté générale"]; break;
+                case 6: matin.push("🏗️ Manœuvre secours routiers à Fert Recyclage"); apresMidi = ["🧼 Nettoyage des containers à déchets et du véhicule de servitude"]; break;
+                case 0: matin.push("🚑 Protocole des VSAV et changement d'ordre", "🧪 Commande oxygène avant 10h", "🚒 Inventaire des CCF"); break;
+            }
+
+            let cls = "work-day", status = "";
+            if(joursFeries.includes(iso)) { cls = "holiday"; status = '🚩'; }
+            else if(checkVacancesB(iso)) { cls = "vacation"; status = '🏖️'; }
+            else if(dayOfWeek === 0 || dayOfWeek === 6) cls = "weekend";
+
+            const card = document.createElement('div');
+            card.id = "date-"+iso;
+            card.className = "day-card " + cls;
+            card.innerHTML = `
+                <div class="day-card-header" onclick="selectDay(this.parentElement)">
+                    <div>${d.toLocaleDateString('fr-FR', {weekday:'short', day:'numeric', month:'short'})} ${status}</div>
+                    <div class="cycle-badge">${cycle[(dayCounter + startDayIndex) % 6]}</div>
+                </div>
+                <div class="day-details"><div class="day-details-content">
+                    <div class="task-list">
+                        <strong>MATIN</strong>${matin.map(t=>`<div>🔹 ${t}</div>`).join('')}
+                        ${apresMidi.length?`<strong style="margin-top:8px">APRÈS-MIDI</strong>${apresMidi.map(t=>`<div>🔹 ${t}</div>`).join('')}`:''}
+                    </div>
+                </div></div>
+            `;
+            calendar.appendChild(card);
+            d.setDate(d.getDate()+1);
+            dayCounter++;
+        }
+
+        function switchView(name) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(name + '-view').classList.add('active');
+            document.getElementById('btn-' + (name === 'planning' ? 'plan' : name === 'sms' ? 'sms' : 'proc')).classList.add('active');
             window.scrollTo(0,0);
         }
 
-        /* --- PROCÉDURES --- */
-        function toggleProc(header){
+        function toggleProc(header) {
             header.parentElement.classList.toggle('active');
             header.querySelector('span').innerText = header.parentElement.classList.contains('active') ? '-' : '+';
         }
 
-        /* --- CALENDRIER --- */
-        function isFirstMonday(date){return date.getDay()===1 && date.getDate()<=7;}
-        function checkVacancesB(dateStr){
-            const v=[["2026-02-14","2026-03-01"],["2026-04-11","2026-04-26"],["2026-07-04","2026-08-31"],["2026-10-17","2026-11-01"],["2026-12-19","2026-12-31"]];
-            return v.some(p=>dateStr>=p[0]&&dateStr<=p[1]);
+        function selectDay(card) {
+            const wasActive = card.classList.contains('active');
+            document.querySelectorAll('.day-card').forEach(c => { c.classList.remove('active'); c.classList.remove('highlight'); });
+            card.classList.add('highlight');
+            if(!wasActive) card.classList.add('active');
         }
 
-        const calendar = document.getElementById("calendar");
-        let d = new Date(2026,0,1,12,0,0);
-        const startDayIndex = 4;
-        let dayCounter = 0
+        function scrollToToday() {
+            const now = new Date();
+            const iso = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+            const el = document.getElementById("date-"+iso);
+            if(el) { selectDay(el); el.scrollIntoView({behavior:'smooth', block:'center'}); }
+        }
+
+        function loadChecklist() {
+            const list = document.getElementById('checklist-list');
+            const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+            list.innerHTML = smsTasks.map((task, i) => `
+                <div class="cl-item ${saved[i] ? 'done' : ''}" onclick="toggleTask(${i})">
+                    <input type="checkbox" ${saved[i] ? 'checked' : ''}>
+                    <span class="time">${task.t}</span>
+                    <span class="icon">${task.i}</span>
+                    <span class="text">${task.d}</span>
+                </div>
+            `).join('');
+            updateProgress();
+        }
+
+        function toggleTask(i) {
+            let saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+            saved[i] = !saved[i];
+            localStorage.setItem('smt_tasks', JSON.stringify(saved));
+            loadChecklist();
+        }
+
+        function updateProgress() {
+            const saved = JSON.parse(localStorage.getItem('smt_tasks')) || {};
+            const done = Object.values(saved).filter(v => v).length;
+            document.getElementById('cl-count').innerText = `${done} / ${smsTasks.length} tâches effectuées`;
+            document.getElementById('cl-bar').style.width = (done/smsTasks.length*100) + '%';
+        }
+
+        function resetChecklist() {
+            if(confirm("Réinitialiser la journée ?")) { localStorage.removeItem('smt_tasks'); loadChecklist(); }
+        }
+
+        document.getElementById('datePicker').addEventListener('change', function(){
+            const el = document.getElementById("date-"+this.value);
+            if(el) { selectDay(el); el.scrollIntoView({behavior:'smooth', block:'center'}); }
+        });
