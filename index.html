@@ -23,11 +23,8 @@
             transition: 0.3s; padding-bottom: 40px; -webkit-user-select: none;
         }
 
-        /* HEADER */
-        .header-logo { text-align: center; margin-top: 10px; }
-        .logo-img { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--accent); }
+        .header-logo { text-align: center; margin-top: 10px; font-size: 4rem; }
 
-        /* DASHBOARD */
         .nav-grid {
             display: grid; grid-template-columns: 1fr 1fr;
             gap: 15px; padding: 15px; max-width: 500px; margin: 0 auto;
@@ -41,55 +38,46 @@
         .nav-btn:active { transform: scale(0.95); background: var(--accent); color: var(--bg); }
         .nav-btn span.emoji { font-size: 2.5rem; margin-bottom: 10px; }
 
-        /* VUES */
         .view { display: none; padding: 15px; animation: fadeIn 0.2s; }
         .view.active { display: block; }
         @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
         .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
 
-        /* PLANNING & CYCLE */
-        .off-btn { background: #334155; border: none; color: white; padding: 8px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
-        .off-btn.active { background: var(--accent); color: var(--bg); font-weight: bold; }
-        
         #today-btn { 
-            width: 100%; background: var(--card-bg); border: 1px solid var(--accent); 
+            width: 100%; background: var(--card-bg); border: 2px solid var(--accent); 
             border-radius: 12px; padding: 15px; cursor: pointer; font-weight: bold; color: var(--accent);
-            margin-bottom: 15px;
+            margin-bottom: 15px; font-size: 1rem;
         }
 
-        .day-card { border-radius: 12px; color: #1e293b; margin-bottom: 10px; overflow: hidden; border: 3px solid transparent; transition: 0.2s; }
+        .day-card { border-radius: 12px; color: #1e293b; margin-bottom: 10px; overflow: hidden; border: 3px solid transparent; }
         .day-card.work-day { background: #cbd5e1; }
         .day-card.weekend { background: #475569; color: white; }
         .day-card.vacation { background: var(--vacation); color: white; }
-        .day-card.today { border-color: #ef4444; transform: scale(1.02); }
+        .day-card.today { border-color: #ef4444; transform: scale(1.01); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
         
         .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(0,0,0,0.05); }
         .day-card.active .details { max-height: 200px; padding: 15px; border-top: 1px solid rgba(0,0,0,0.1); }
 
-        /* SMS LIST */
         .cl-item { background: white; color: #1e293b; padding: 15px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; border-left: 6px solid var(--accent); transition: 0.2s; cursor: pointer; }
         .cl-item.done { opacity: 0.5; border-left-color: var(--success); }
-        .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; }
         
-        /* PROGRESS BAR */
         .prog-container { background: var(--card-bg); padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid #334155; }
         .bar-bg { width: 100%; height: 12px; background: #334155; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .bar-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.4s ease-out; }
 
-        textarea { width: 100%; box-sizing: border-box; font-size: 16px; border: 1px solid #334155; }
+        textarea { width: 100%; box-sizing: border-box; font-size: 16px; border: 1px solid #334155; height: 250px; background: var(--card-bg); color: white; border-radius: 12px; padding: 15px; }
     </style>
 </head>
 <body>
 
     <div style="display:flex; justify-content: space-between; align-items: center; padding: 15px 20px;">
-        <h2 style="margin:0; color:var(--accent); letter-spacing: 1px;">SMS SMT 2026</h2>
-        <button onclick="document.body.classList.toggle('night-mode')" style="background:var(--card-bg); border:1px solid var(--accent); color:var(--accent); border-radius:50%; width:40px; height:40px; cursor:pointer;">🌙</button>
+        <h2 style="margin:0; color:var(--accent);">SMS SMT 2026</h2>
+        <button onclick="document.body.classList.toggle('night-mode')" style="background:var(--card-bg); border:1px solid var(--accent); color:var(--accent); border-radius:50%; width:40px; height:40px;">🌙</button>
     </div>
 
-    <div class="header-logo">
-        <div id="alt-logo" style="font-size: 4rem;">🚒</div>
-    </div>
+    <div class="header-logo">🚒</div>
 
     <div id="menu-view" class="view active">
         <div class="nav-grid">
@@ -98,31 +86,17 @@
             <div class="nav-btn" onclick="switchView('proc')"><span class="emoji">📚</span>Procédures</div>
             <div class="nav-btn" onclick="switchView('passation')"><span class="emoji">📝</span>Passation</div>
         </div>
-        <p id="info-relance" style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px;"></p>
+        <p id="info-relance" style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px; font-size:1.2rem;"></p>
     </div>
 
     <div id="planning-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        
-        <div style="background:var(--card-bg); padding:12px; border-radius:12px; margin-bottom:15px; border:1px solid #334155;">
-            <p style="margin:0 0 10px 0; font-size:0.8rem; opacity:0.8; text-align:center;">Ajuster le cycle (6ème) :</p>
-            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-                <button onclick="adjustOffset(0)" class="off-btn">6 & 4</button>
-                <button onclick="adjustOffset(1)" class="off-btn">1 & 5</button>
-                <button onclick="adjustOffset(2)" class="off-btn">2 & 6</button>
-                <button onclick="adjustOffset(3)" class="off-btn">3 & 1</button>
-                <button onclick="adjustOffset(4)" class="off-btn">4 & 2</button>
-                <button onclick="adjustOffset(5)" class="off-btn">5 & 3</button>
-            </div>
-        </div>
-
         <button id="today-btn" onclick="scrollToToday()">📍 Revenir à aujourd'hui</button>
         <div id="calendar-container"></div>
     </div>
 
     <div id="sms-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        
         <div class="prog-container">
             <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold;">
                 <span>Progression Garde</span>
@@ -130,36 +104,33 @@
             </div>
             <div class="bar-bg"><div id="sms-bar" class="bar-fill"></div></div>
         </div>
-
         <div id="sms-list"></div>
-        <button onclick="resetSMS()" style="width:100%; background:#ef4444; color:white; border:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:20px; cursor:pointer;">🔄 RÉINITIALISER LA GARDE</button>
+        <button onclick="resetSMS()" style="width:100%; background:#ef4444; color:white; border:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:20px;">🔄 RÉINITIALISER LA GARDE</button>
     </div>
 
     <div id="proc-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        <div style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid #334155; line-height:1.6;">
+        <div style="background:var(--card-bg); padding:20px; border-radius:15px; border:1px solid #334155;">
             <h3 style="color:var(--accent); margin-top:0;">⛽ Carburant Jeudi</h3>
             Saisie <b>Kimoce</b> avant 12h.<br>
             Scan BL à : <i style="color:var(--accent)">gp_piecesengins@intrabat.bmpm.fr</i>
-            <hr style="opacity:0.1; margin:15px 0;">
-            <h3 style="color:var(--accent);">🚑 VSAV</h3>
-            Désarmement VSAV 2 à 20h00.
         </div>
     </div>
 
     <div id="passation-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        <textarea id="memo" placeholder="Écris ta passation ici..." style="width:100%; height:250px; background:var(--card-bg); color:white; border-radius:12px; padding:15px; border:1px solid var(--accent);" oninput="localStorage.setItem('smt_memo', this.value)"></textarea>
-        
+        <textarea id="memo" placeholder="Ta passation..." oninput="localStorage.setItem('smt_memo', this.value)"></textarea>
         <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button onclick="copyToClipboard()" style="flex: 1; background: var(--card-bg); color: var(--accent); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; font-weight: bold; cursor:pointer;">📋 Copier</button>
-            <button class="btn-wa" onclick="shareWA()" style="flex: 2; display:flex; align-items:center; justify-content:center; gap:8px;">📤 Partager WhatsApp</button>
+            <button onclick="copyToClipboard()" style="flex: 1; background: var(--card-bg); color: var(--accent); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; font-weight: bold;">📋 Copier</button>
+            <button class="btn-wa" onclick="shareWA()">📤 WhatsApp</button>
         </div>
-        <div id="copy-toast" style="display:none; text-align:center; color:var(--success); font-size:0.9rem; margin-top:10px; font-weight:bold;">✅ Texte copié !</div>
+        <div id="copy-toast" style="display:none; text-align:center; color:var(--success); font-weight:bold; margin-top:10px;">✅ Texte copié !</div>
     </div>
 
 <script>
-    const cycle = ["6 & 4", "1 & 5", "2 & 6", "3 & 1", "4 & 2", "5 & 3"];
+    // Configuration du cycle basée sur : 16 Mars 2026 = 6 & 4
+    const cycleNames = ["6 & 4", "1 & 5", "2 & 6", "3 & 1", "4 & 2", "5 & 3"];
+    const refDate = new Date(2026, 2, 16); // 16 Mars 2026
     const vacancesB = [{s:"2026-02-14",e:"2026-03-01"},{s:"2026-04-11",e:"2026-04-26"},{s:"2026-07-04",e:"2026-08-31"},{s:"2026-10-17",e:"2026-11-01"},{s:"2026-12-19",e:"2026-12-31"}];
     
     const smsTasks = [
@@ -171,7 +142,14 @@
         "21:30 Signature cahier cuisine 👨‍🍳", "22:00 Ronde 22h 👨🏻‍🚒"
     ];
 
-    let currentOffset = parseInt(localStorage.getItem('smt_offset')) || 4;
+    function getCycleForDate(d) {
+        // Calcul du nombre de jours entre la date cible et la date de référence
+        const diffTime = d.getTime() - refDate.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        let index = diffDays % 6;
+        if (index < 0) index += 6; // Gère les dates avant le 16 mars
+        return cycleNames[index];
+    }
 
     function getTasks(d) {
         const day = d.getDay();
@@ -191,41 +169,37 @@
         if(id === 'sms') renderSMS();
     }
 
-    function adjustOffset(val) {
-        const today = new Date();
-        const diffDays = Math.floor((today - new Date(2026, 0, 1)) / 86400000);
-        currentOffset = (val - (diffDays % 6) + 6) % 6;
-        localStorage.setItem('smt_offset', currentOffset);
-        init(); 
-    }
-
     function init() {
         const cal = document.getElementById('calendar-container');
         cal.innerHTML = '';
         const today = new Date();
-        const isoToday = today.toISOString().split('T')[0];
+        today.setHours(0,0,0,0); // On cale sur minuit pour la comparaison
+        
         let d = new Date(2026, 0, 1);
-        let dayCounter = 0;
-
         while(d.getFullYear() === 2026) {
-            const iso = d.toISOString().split('T')[0];
-            const isVac = vacancesB.some(v => iso >= v.s && iso <= v.e);
-            const isToday = iso === isoToday;
-            const cycleIdx = (dayCounter + currentOffset) % 6;
+            // Création d'un ID de date propre sans décalage ISO
+            const dateId = `date-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            
+            const isVac = vacancesB.some(v => {
+                const start = new Date(v.s); const end = new Date(v.e);
+                return d >= start && d <= end;
+            });
+            const isToday = d.getTime() === today.getTime();
+            const cycleText = getCycleForDate(d);
             
             const card = document.createElement('div');
-            card.id = "date-" + iso;
-            card.className = `day-card ${isVac?'vacation':(d.getDay()==0||d.getDay()==6?'weekend':'work-day')} ${isToday?'today active':''}`;
+            card.id = dateId;
+            card.className = `day-card ${isVac?'vacation':(d.getDay()==0||d.getDay()==6?'weekend':'work-day')} ${isToday?'today':''}`;
             card.innerHTML = `
                 <div class="card-header" onclick="this.parentElement.classList.toggle('active')">
                     <span>${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} ${isVac?'🏖️':''}</span>
-                    <span style="background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:8px;">${cycle[cycleIdx]}</span>
+                    <span style="background:rgba(0,0,0,0.1);padding:4px 8px;border-radius:8px;">${cycleText}</span>
                 </div>
                 <div class="details">${getTasks(d)}</div>
             `;
             cal.appendChild(card);
-            if(isToday) document.getElementById('info-relance').innerText = `Aujourd'hui : ${cycle[cycleIdx]}`;
-            d.setDate(d.getDate()+1); dayCounter++;
+            if(isToday) document.getElementById('info-relance').innerText = `Aujourd'hui : ${cycleText}`;
+            d.setDate(d.getDate()+1);
         }
         renderSMS();
         document.getElementById('memo').value = localStorage.getItem('smt_memo') || "";
@@ -241,7 +215,6 @@
                 <span style="margin-left:10px">${t}</span>
             </div>`;
         }).join('');
-        
         const pc = Math.round((done / smsTasks.length) * 100);
         document.getElementById('sms-bar').style.width = pc + "%";
         document.getElementById('sms-percent').innerText = pc + "%";
@@ -259,20 +232,26 @@
     function copyToClipboard() {
         const m = document.getElementById('memo');
         m.select();
-        navigator.clipboard.writeText(m.value);
+        m.setSelectionRange(0, 99999); 
+        document.execCommand('copy');
         const t = document.getElementById('copy-toast');
         t.style.display='block'; setTimeout(()=>t.style.display='none', 2000);
     }
 
     function shareWA() {
+        const text = document.getElementById('memo').value;
         copyToClipboard();
-        window.location.href = "whatsapp://send?text=" + encodeURIComponent(document.getElementById('memo').value);
+        window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
     function scrollToToday() {
-        const today = new Date().toISOString().split('T')[0];
-        const el = document.getElementById("date-" + today);
-        if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const d = new Date();
+        const dateId = `date-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        const el = document.getElementById(dateId);
+        if(el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('active'); // Ouvre les détails du jour
+        }
     }
 
     window.onload = init;
