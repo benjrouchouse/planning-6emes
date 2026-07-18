@@ -15,34 +15,27 @@
             --border: #e2e8f0; --weekend: #cbd5e1; --holiday: #fecaca;
         }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); padding-bottom: 40px; -webkit-user-select: none; }
-
         .header-logo { text-align: center; margin-top: 10px; font-size: 4rem; }
         .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; max-width: 500px; margin: 0 auto; }
         .nav-btn { background: var(--card-bg); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1; font-weight: bold; border: 1px solid var(--border); transition: 0.1s; }
         .nav-btn:active { transform: scale(0.95); background: var(--accent); color: white; }
         .nav-btn span.emoji { font-size: 2.5rem; margin-bottom: 10px; }
-
         .view { display: none; padding: 15px; }
         .view.active { display: block; }
         .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
-
         #today-btn { width: 100%; background: var(--card-bg); border: 2px solid var(--accent); border-radius: 12px; padding: 15px; cursor: pointer; font-weight: bold; color: var(--accent); margin-bottom: 15px; }
-
         .day-card { border-radius: 12px; background: white; border: 1px solid var(--border); margin-bottom: 10px; overflow: hidden; }
         .day-card.work-day { border-left: 6px solid var(--accent); }
         .day-card.weekend { border-left: 6px solid var(--weekend); background: #f1f5f9; }
         .day-card.holiday { border-left: 6px solid #ef4444; background: var(--holiday); }
         .day-card.vacation { background: #f3e8ff; border-left: 6px solid var(--vacation); }
         .day-card.today { border: 2px solid var(--accent); transform: scale(1.01); }
-        
         .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
         .details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(0,0,0,0.02); }
-        .day-card.active .details { max-height: 200px; padding: 15px; border-top: 1px solid var(--border); }
-
+        .day-card.active .details { max-height: 500px; padding: 15px; border-top: 1px solid var(--border); }
         .cl-item { background: white; border: 1px solid var(--border); padding: 15px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; }
         .cl-item.done { opacity: 0.6; background: #f1f5f9; text-decoration: line-through; }
         .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; }
-        
         .prog-container { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
         .bar-bg { width: 100%; height: 12px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .bar-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.4s; }
@@ -61,10 +54,8 @@
             <div class="nav-btn" onclick="switchView('proc')"><span class="emoji">📚</span>Procédures</div>
             <div class="nav-btn" onclick="switchView('passation')"><span class="emoji">📝</span>Passation</div>
         </div>
-        <p id="info-relance" style="text-align:center; color:var(--accent); font-weight:bold;"></p>
     </div>
 
-    <!-- Vues -->
     <div id="planning-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
         <button id="today-btn" onclick="scrollToToday()">📍 Aujourd'hui</button>
@@ -83,10 +74,7 @@
 
     <div id="proc-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        <div style="background:white; padding:20px; border-radius:15px; border:1px solid var(--border);">
-            <h3>⛽ Carburant</h3>
-            Saisie Kimoce avant 12h.
-        </div>
+        <div style="background:white; padding:20px; border-radius:15px; border:1px solid var(--border);"><h3>⛽ Carburant</h3>Saisie Kimoce avant 12h.</div>
     </div>
 
     <div id="passation-view" class="view">
@@ -100,7 +88,6 @@
     const refDate = new Date(2026, 6, 14); 
     const vacancesB = [{s:"2026-02-14",e:"2026-03-01"},{s:"2026-04-11",e:"2026-04-26"},{s:"2026-07-04",e:"2026-08-31"},{s:"2026-10-17",e:"2026-11-01"},{s:"2026-12-19",e:"2026-12-31"}];
     const feries2026 = ["2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15", "2026-11-01", "2026-11-11", "2026-12-25"];
-    
     const smsTasks = ["07:30 Armée VRCC 👨🏻‍🚒", "10:00 Inventaires 🐿️", "17:00 Désarmée VRCC 👨🏻‍🚒", "18:00 Couleurs 🇫🇷", "20:00 Désarmer VSAV 2 🚑", "22:00 Ronde 22h 👨🏻‍🚒"];
 
     function getCycleForDate(d) {
@@ -124,7 +111,16 @@
             if(d.toDateString() === new Date().toDateString()) classes += " today";
             
             card.className = classes;
-            card.innerHTML = `<div class="card-header" onclick="this.parentElement.classList.toggle('active')"><span>${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'})} ${isVac?'🏖️':(isFerie?'🎉':'')}</span><span>${getCycleForDate(d)}</span></div><div class="details">Garde cycle ${getCycleForDate(d)}</div>`;
+            card.innerHTML = `
+                <div class="card-header" onclick="this.parentElement.classList.toggle('active')">
+                    <span>${d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})} ${isVac?'🏖️':(isFerie?'🎉':'')}</span>
+                    <span>${getCycleForDate(d)}</span>
+                </div>
+                <div class="details">
+                    <ul style="padding-left: 20px; font-size: 0.9rem;">
+                        ${smsTasks.map(t => `<li>${t}</li>`).join('')}
+                    </ul>
+                </div>`;
             cal.appendChild(card);
             d.setDate(d.getDate()+1);
         }
