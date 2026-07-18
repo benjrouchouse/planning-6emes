@@ -45,6 +45,11 @@
             margin-bottom: 15px; font-size: 1rem;
         }
 
+        .jump-row { display:flex; gap:10px; margin-bottom:15px; }
+        #date-picker { flex:1; padding:12px; border-radius:12px; border:1px solid var(--border); font-size:16px; background:white; color:var(--text); }
+        #jump-btn { background: var(--accent); color:white; border:none; padding:12px 18px; border-radius:12px; font-weight:bold; cursor:pointer; }
+        #jump-btn:active { opacity:0.8; }
+
         .day-card { border-radius: 12px; background: white; border: 1px solid var(--border); margin-bottom: 10px; overflow: hidden; }
         .day-card.work-day { border-left: 6px solid var(--accent); }
         .day-card.weekend { border-left: 6px solid #475569; }
@@ -86,6 +91,10 @@
 
     <div id="planning-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
+        <div class="jump-row">
+            <input type="date" id="date-picker" min="2026-01-01" max="2026-12-31">
+            <button id="jump-btn" onclick="goToDate()">🔎 Aller</button>
+        </div>
         <button id="today-btn" onclick="scrollToToday()">📍 Revenir à aujourd'hui</button>
         <div id="calendar-container"></div>
     </div>
@@ -132,7 +141,7 @@
         "10:00 Inventaires SKUYREL 🐿️", "17:00 Désarmée VRCC 👨🏻‍🚒",
         "18:00 Couleurs soir 🇫🇷", "20:00 Désarmer VSAV 2 🚑",
         "20:30 Tableau des postes 📊", "20:45 Feuille de garde lendemain 🖥️",
-        "21:00 Imprimer feuille permissionnaires 📄", "21:15 Remplir Kimos 🖥️",
+        "21:00 Imprimer feuille permissionnaires 📄", "21:15 Remplir Kimoce 🖥️",
         "21:30 Signature cahier cuisine 👨‍🍳", "22:00 Ronde 22h 👨🏻‍🚒"
     ];
 
@@ -160,6 +169,7 @@
         document.getElementById(id + '-view').classList.add('active');
         window.scrollTo(0,0);
         if(id === 'sms') renderSMS();
+        if(id === 'planning') setTimeout(scrollToToday, 150);
     }
 
     function init() {
@@ -194,6 +204,12 @@
         }
         renderSMS();
         document.getElementById('memo').value = localStorage.getItem('smt_memo') || "";
+
+        // Pré-remplit le sélecteur de date avec le jour actuel
+        const y = today.getFullYear();
+        const m = String(today.getMonth()+1).padStart(2,'0');
+        const dd = String(today.getDate()).padStart(2,'0');
+        document.getElementById('date-picker').value = `${y}-${m}-${dd}`;
     }
 
     function renderSMS() {
@@ -233,13 +249,29 @@
         window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
     }
 
+    function highlightCard(el) {
+        document.querySelectorAll('.day-card.active').forEach(c => { if(c !== el) c.classList.remove('active'); });
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('active');
+    }
+
     function scrollToToday() {
         const d = new Date();
         const dateId = `date-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
         const el = document.getElementById(dateId);
+        if(el) highlightCard(el);
+    }
+
+    function goToDate() {
+        const val = document.getElementById('date-picker').value; // format yyyy-mm-dd
+        if(!val) return;
+        const [y, m, dayNum] = val.split('-').map(Number);
+        const dateId = `date-${y}-${m}-${dayNum}`;
+        const el = document.getElementById(dateId);
         if(el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('active');
+            highlightCard(el);
+        } else {
+            alert("Cette date n'est pas dans le planning 2026.");
         }
     }
 
