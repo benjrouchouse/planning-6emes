@@ -6,72 +6,52 @@
     <title>SMS SMT 2026</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="logo.png">
 
     <style>
         :root {
             --bg: #f8fafc; --accent: #0284c7; --success: #16a34a;
-            --card-bg: #ffffff; --text: #1e293b; --warning: #d97706;
-            --vacation: #9333ea; --border: #e2e8f0;
+            --card-bg: #ffffff; --text: #1e293b; --vacation: #9333ea;
+            --border: #e2e8f0; --weekend: #cbd5e1; --holiday: #fecaca;
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            margin: 0; background: var(--bg); color: var(--text);
-            transition: 0.3s; padding-bottom: 40px; -webkit-user-select: none;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); padding-bottom: 40px; -webkit-user-select: none; }
 
         .header-logo { text-align: center; margin-top: 10px; font-size: 4rem; }
-
-        .nav-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 15px; padding: 15px; max-width: 500px; margin: 0 auto;
-        }
-        .nav-btn {
-            background: var(--card-bg); border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; aspect-ratio: 1 / 1;
-            font-weight: bold; border: 1px solid var(--border); transition: 0.1s;
-        }
+        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; max-width: 500px; margin: 0 auto; }
+        .nav-btn { background: var(--card-bg); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1 / 1; font-weight: bold; border: 1px solid var(--border); transition: 0.1s; }
         .nav-btn:active { transform: scale(0.95); background: var(--accent); color: white; }
         .nav-btn span.emoji { font-size: 2.5rem; margin-bottom: 10px; }
 
-        .view { display: none; padding: 15px; animation: fadeIn 0.2s; }
+        .view { display: none; padding: 15px; }
         .view.active { display: block; }
-        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
         .back-btn { background: none; border: 1px solid var(--accent); color: var(--accent); padding: 10px 20px; border-radius: 10px; margin-bottom: 15px; cursor: pointer; font-weight: bold; }
 
-        #today-btn { 
-            width: 100%; background: var(--card-bg); border: 2px solid var(--accent); 
-            border-radius: 12px; padding: 15px; cursor: pointer; font-weight: bold; color: var(--accent);
-            margin-bottom: 15px; font-size: 1rem;
-        }
+        #today-btn { width: 100%; background: var(--card-bg); border: 2px solid var(--accent); border-radius: 12px; padding: 15px; cursor: pointer; font-weight: bold; color: var(--accent); margin-bottom: 15px; }
 
         .day-card { border-radius: 12px; background: white; border: 1px solid var(--border); margin-bottom: 10px; overflow: hidden; }
         .day-card.work-day { border-left: 6px solid var(--accent); }
-        .day-card.weekend { border-left: 6px solid #475569; }
+        .day-card.weekend { border-left: 6px solid var(--weekend); background: #f1f5f9; }
+        .day-card.holiday { border-left: 6px solid #ef4444; background: var(--holiday); }
         .day-card.vacation { background: #f3e8ff; border-left: 6px solid var(--vacation); }
-        .day-card.today { border: 2px solid var(--accent); transform: scale(1.01); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .day-card.today { border: 2px solid var(--accent); transform: scale(1.01); }
         
         .card-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .details { max-height: 0; overflow: hidden; transition: 0.3s; background: #f8fafc; }
+        .details { max-height: 0; overflow: hidden; transition: 0.3s; background: rgba(0,0,0,0.02); }
         .day-card.active .details { max-height: 200px; padding: 15px; border-top: 1px solid var(--border); }
 
-        .cl-item { background: white; border: 1px solid var(--border); padding: 15px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; transition: 0.2s; cursor: pointer; }
+        .cl-item { background: white; border: 1px solid var(--border); padding: 15px; margin-bottom: 8px; border-radius: 12px; display: flex; align-items: center; cursor: pointer; }
         .cl-item.done { opacity: 0.6; background: #f1f5f9; text-decoration: line-through; }
-        .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; }
         
         .prog-container { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; border: 1px solid var(--border); }
         .bar-bg { width: 100%; height: 12px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-top: 8px; }
-        .bar-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.4s ease-out; }
-
-        textarea { width: 100%; box-sizing: border-box; font-size: 16px; border: 1px solid var(--border); height: 250px; background: white; color: var(--text); border-radius: 12px; padding: 15px; }
+        .bar-fill { height: 100%; width: 0%; background: var(--accent); transition: 0.4s; }
+        textarea { width: 100%; box-sizing: border-box; font-size: 16px; border: 1px solid var(--border); height: 250px; background: white; border-radius: 12px; padding: 15px; }
     </style>
 </head>
 <body>
 
-    <div style="padding: 15px 20px;">
-        <h2 style="margin:0; color:var(--accent);">SMS SMT 2026</h2>
-    </div>
-
+    <div style="padding: 15px 20px;"><h2 style="margin:0; color:var(--accent);">SMS SMT 2026</h2></div>
     <div class="header-logo">🚒</div>
 
     <div id="menu-view" class="view active">
@@ -81,115 +61,71 @@
             <div class="nav-btn" onclick="switchView('proc')"><span class="emoji">📚</span>Procédures</div>
             <div class="nav-btn" onclick="switchView('passation')"><span class="emoji">📝</span>Passation</div>
         </div>
-        <p id="info-relance" style="text-align:center; color:var(--accent); font-weight:bold; margin-top:20px; font-size:1.2rem;"></p>
+        <p id="info-relance" style="text-align:center; color:var(--accent); font-weight:bold;"></p>
     </div>
 
+    <!-- Vues -->
     <div id="planning-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
-        <button id="today-btn" onclick="scrollToToday()">📍 Revenir à aujourd'hui</button>
+        <button id="today-btn" onclick="scrollToToday()">📍 Aujourd'hui</button>
         <div id="calendar-container"></div>
     </div>
 
     <div id="sms-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
         <div class="prog-container">
-            <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold;">
-                <span>Progression Garde</span>
-                <span id="sms-percent">0%</span>
-            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:bold;"><span>Progression</span><span id="sms-percent">0%</span></div>
             <div class="bar-bg"><div id="sms-bar" class="bar-fill"></div></div>
         </div>
         <div id="sms-list"></div>
-        <button onclick="resetSMS()" style="width:100%; background:#ef4444; color:white; border:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:20px;">🔄 RÉINITIALISER LA GARDE</button>
+        <button onclick="resetSMS()" style="width:100%; background:#ef4444; color:white; border:none; padding:15px; border-radius:12px; font-weight:bold;">🔄 RÉINITIALISER</button>
     </div>
 
     <div id="proc-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
         <div style="background:white; padding:20px; border-radius:15px; border:1px solid var(--border);">
-            <h3 style="color:var(--accent); margin-top:0;">⛽ Carburant Jeudi</h3>
-            Saisie <b>Kimoce</b> avant 12h.<br>
-            Scan BL à : <i style="color:var(--accent)">gp_piecesengins@intrabat.bmpm.fr</i>
+            <h3>⛽ Carburant</h3>
+            Saisie Kimoce avant 12h.
         </div>
     </div>
 
     <div id="passation-view" class="view">
         <button class="back-btn" onclick="switchView('menu')">← Menu</button>
         <textarea id="memo" placeholder="Ta passation..." oninput="localStorage.setItem('smt_memo', this.value)"></textarea>
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button onclick="copyToClipboard()" style="flex: 1; background: white; color: var(--accent); border: 1px solid var(--accent); padding: 15px; border-radius: 12px; font-weight: bold;">📋 Copier</button>
-            <button class="btn-wa" onclick="shareWA()">📤 WhatsApp</button>
-        </div>
-        <div id="copy-toast" style="display:none; text-align:center; color:var(--success); font-weight:bold; margin-top:10px;">✅ Texte copié !</div>
+        <button class="btn-wa" onclick="shareWA()" style="margin-top:10px">📤 WhatsApp</button>
     </div>
 
 <script>
     const cycleNames = ["6 & 4", "1 & 5", "2 & 6", "3 & 1", "4 & 2", "5 & 3"];
     const refDate = new Date(2026, 6, 14); 
     const vacancesB = [{s:"2026-02-14",e:"2026-03-01"},{s:"2026-04-11",e:"2026-04-26"},{s:"2026-07-04",e:"2026-08-31"},{s:"2026-10-17",e:"2026-11-01"},{s:"2026-12-19",e:"2026-12-31"}];
+    const feries2026 = ["2026-01-01", "2026-04-06", "2026-05-01", "2026-05-08", "2026-05-14", "2026-05-25", "2026-07-14", "2026-08-15", "2026-11-01", "2026-11-11", "2026-12-25"];
     
-    const smsTasks = [
-        "07:30 Armée VRCC 👨🏻‍🚒", "07:30 Feuilles de garde du jour 🖥️",
-        "10:00 Inventaires SKUYREL 🐿️", "17:00 Désarmée VRCC 👨🏻‍🚒",
-        "18:00 Couleurs soir 🇫🇷", "20:00 Désarmer VSAV 2 🚑",
-        "20:30 Tableau des postes 📊", "20:45 Feuille de garde lendemain 🖥️",
-        "21:00 Imprimer feuille permissionnaires 📄", "21:15 Remplir Kimos 🖥️",
-        "21:30 Signature cahier cuisine 👨‍🍳", "22:00 Ronde 22h 👨🏻‍🚒"
-    ];
+    const smsTasks = ["07:30 Armée VRCC 👨🏻‍🚒", "10:00 Inventaires 🐿️", "17:00 Désarmée VRCC 👨🏻‍🚒", "18:00 Couleurs 🇫🇷", "20:00 Désarmer VSAV 2 🚑", "22:00 Ronde 22h 👨🏻‍🚒"];
 
     function getCycleForDate(d) {
-        const diffTime = d.getTime() - refDate.getTime();
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const diffDays = Math.floor((d.getTime() - refDate.getTime()) / (1000 * 60 * 60 * 24));
         let index = diffDays % 6;
-        if (index < 0) index += 6;
-        return cycleNames[index];
-    }
-
-    function getTasks(d) {
-        const day = d.getDay();
-        if(day===1) return "Matin: Code d'honneur, EPI, ARI. AM: Sport.";
-        if(day===2) return "Matin: Échelles, Lot Tramway. AM: Renfo.";
-        if(day===3) return "Matin: Thermiques. AM: Mise en pompe.";
-        if(day===4) return "Matin: LSPCC, Sac PS. Cuves Gasoil. AM: Services.";
-        if(day===5) return "Matin: Pneumatiques. AM: Services.";
-        if(day===6) return "Manœuvre SR. AM: Containers.";
-        return "Protocole VSAV, Commande O2, Inventaire CCF.";
-    }
-
-    function switchView(id) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById(id + '-view').classList.add('active');
-        window.scrollTo(0,0);
-        if(id === 'sms') renderSMS();
+        return cycleNames[index < 0 ? index + 6 : index];
     }
 
     function init() {
         const cal = document.getElementById('calendar-container');
-        cal.innerHTML = '';
-        const today = new Date();
-        today.setHours(0,0,0,0);
-        
         let d = new Date(2026, 0, 1);
         while(d.getFullYear() === 2026) {
-            const dateId = `date-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            const isVac = vacancesB.some(v => {
-                const start = new Date(v.s); const end = new Date(v.e);
-                return d >= start && d <= end;
-            });
-            const isToday = d.getTime() === today.getTime();
-            const cycleText = getCycleForDate(d);
+            const dateStr = d.toISOString().split('T')[0];
+            const isVac = vacancesB.some(v => d >= new Date(v.s) && d <= new Date(v.e));
+            const isFerie = feries2026.includes(dateStr);
+            const isWeekend = (d.getDay()==0 || d.getDay()==6);
             
             const card = document.createElement('div');
-            card.id = dateId;
-            card.className = `day-card ${isVac?'vacation':(d.getDay()==0||d.getDay()==6?'weekend':'work-day')} ${isToday?'today':''}`;
-            card.innerHTML = `
-                <div class="card-header" onclick="this.parentElement.classList.toggle('active')">
-                    <span>${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'})} ${isVac?'🏖️':''}</span>
-                    <span style="background:#f1f5f9;padding:4px 8px;border-radius:8px;">${cycleText}</span>
-                </div>
-                <div class="details">${getTasks(d)}</div>
-            `;
+            card.id = `date-${dateStr}`;
+            let classes = "day-card" + (isVac ? " vacation" : (isFerie ? " holiday" : (isWeekend ? " weekend" : " work-day")));
+            if(d.toDateString() === new Date().toDateString()) classes += " today";
+            
+            card.className = classes;
+            card.innerHTML = `<div class="card-header" onclick="this.parentElement.classList.toggle('active')"><span>${d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric'})} ${isVac?'🏖️':(isFerie?'🎉':'')}</span><span>${getCycleForDate(d)}</span></div><div class="details">Garde cycle ${getCycleForDate(d)}</div>`;
             cal.appendChild(card);
-            if(isToday) document.getElementById('info-relance').innerText = `Aujourd'hui : ${cycleText}`;
             d.setDate(d.getDate()+1);
         }
         renderSMS();
@@ -201,9 +137,7 @@
         let done = 0;
         document.getElementById('sms-list').innerHTML = smsTasks.map((t,i) => {
             if(saved[i]) done++;
-            return `<div class="cl-item ${saved[i]?'done':''}" onclick="toggleSMS(${i})">
-                <span style="margin-left:10px">${t}</span>
-            </div>`;
+            return `<div class="cl-item ${saved[i]?'done':''}" onclick="toggleSMS(${i})"><span>${t}</span></div>`;
         }).join('');
         const pc = Math.round((done / smsTasks.length) * 100);
         document.getElementById('sms-bar').style.width = pc + "%";
@@ -217,31 +151,15 @@
         renderSMS();
     }
 
-    function resetSMS() { if(confirm("Réinitialiser les tâches ?")) { localStorage.removeItem('smt_sms'); renderSMS(); } }
-
-    function copyToClipboard() {
-        const m = document.getElementById('memo');
-        m.select();
-        document.execCommand('copy');
-        const t = document.getElementById('copy-toast');
-        t.style.display='block'; setTimeout(()=>t.style.display='none', 2000);
+    function switchView(id) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(id + '-view').classList.add('active');
+        window.scrollTo(0,0);
     }
 
-    function shareWA() {
-        const text = document.getElementById('memo').value;
-        copyToClipboard();
-        window.location.href = "whatsapp://send?text=" + encodeURIComponent(text);
-    }
-
-    function scrollToToday() {
-        const d = new Date();
-        const dateId = `date-${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-        const el = document.getElementById(dateId);
-        if(el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            el.classList.add('active');
-        }
-    }
+    function resetSMS() { if(confirm("Réinitialiser ?")) { localStorage.removeItem('smt_sms'); renderSMS(); } }
+    function shareWA() { window.location.href = "whatsapp://send?text=" + encodeURIComponent(document.getElementById('memo').value); }
+    function scrollToToday() { const el = document.getElementById(`date-${new Date().toISOString().split('T')[0]}`); if(el) { el.scrollIntoView(); el.classList.add('active'); } }
 
     window.onload = init;
 </script>
